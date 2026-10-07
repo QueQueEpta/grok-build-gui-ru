@@ -1,3 +1,4 @@
+// Modified for the Russian community edition, 2026-10-07.
 const fs = require("node:fs");
 const path = require("node:path");
 
@@ -123,11 +124,11 @@ function normalizeValue(definition, input) {
   if (definition.type === "string") return String(input ?? "").slice(0, 512);
   if (definition.type === "enum") {
     const value = String(input);
-    if (!definition.choices.includes(value)) throw new Error(`不支持的 ${definition.id} 值`);
+    if (!definition.choices.includes(value)) throw new Error(`Недопустимое ${definition.id} значение`);
     return value;
   }
   const value = Number(input);
-  if (!Number.isFinite(value)) throw new Error(`${definition.id} 需要数值`);
+  if (!Number.isFinite(value)) throw new Error(`${definition.id} требует числовое значение`);
   const clamped = Math.min(definition.max, Math.max(definition.min, value));
   return definition.type === "integer" ? Math.round(clamped) : clamped;
 }
@@ -175,7 +176,7 @@ function writeAtomic(configPath, content) {
 
 function updateNativeSetting(configPath, id, input) {
   const definition = SETTING_MAP.get(id);
-  if (!definition) throw new Error("未知的原生设置项");
+  if (!definition) throw new Error("Неизвестный параметр Runtime");
   const current = fs.existsSync(configPath) ? fs.readFileSync(configPath, "utf8") : "";
   const next = setValue(current, definition, input);
   writeAtomic(configPath, next);
@@ -187,7 +188,7 @@ function validateRawConfig(raw) {
   let quote = null;
   for (const [index, line] of text.split(/\r?\n/).entries()) {
     const trimmed = line.trim();
-    if (trimmed.startsWith("[") && !/^\[\[?.+\]\]?$/.test(trimmed)) throw new Error(`第 ${index + 1} 行的表头格式有误`);
+    if (trimmed.startsWith("[") && !/^\[\[?.+\]\]?$/.test(trimmed)) throw new Error(`Строка ${index + 1} содержит неверный заголовок раздела`);
     for (let i = 0; i < line.length; i += 1) {
       const char = line[i];
       if ((char === '"' || char === "'") && line[i - 1] !== "\\") quote = quote === char ? null : quote || char;

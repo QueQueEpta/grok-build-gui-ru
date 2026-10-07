@@ -1,3 +1,4 @@
+// Modified for the Russian community edition, 2026-10-07.
 const crypto = require("node:crypto");
 const http = require("node:http");
 
@@ -168,7 +169,7 @@ function readRequest(request) {
     request.on("data", (chunk) => {
       size += chunk.length;
       if (size > MAX_REQUEST_BYTES) {
-        reject(new Error("请求体过大"));
+        reject(new Error("Тело запроса слишком большое"));
         request.destroy();
         return;
       }
@@ -232,7 +233,7 @@ function createProviderBridge({ resolveProvider, fetchImpl = globalThis.fetch, h
           const missingName = parsed.choices?.some((choice) => choice.message?.tool_calls?.some((call) => !call.function?.name));
           if (missingName) {
             response.writeHead(502, { "content-type": "application/json" });
-            response.end(JSON.stringify({ error: { message: "第三方模型返回了无法唯一识别的工具调用" } }));
+            response.end(JSON.stringify({ error: { message: "Сторонняя модель вернула неоднозначный вызов инструмента" } }));
             return;
           }
           if (incoming.stream) {
@@ -245,7 +246,7 @@ function createProviderBridge({ resolveProvider, fetchImpl = globalThis.fetch, h
       response.end(output);
     } catch (error) {
       if (!response.headersSent) response.writeHead(502, { "content-type": "application/json" });
-      response.end(JSON.stringify({ error: { message: `第三方模型桥接失败：${error.message}` } }));
+      response.end(JSON.stringify({ error: { message: `Ошибка адаптера сторонней модели: ${error.message}` } }));
     }
   };
 

@@ -1,8 +1,8 @@
 {
   "name": "grok-build-desktop",
-  "version": "0.1.1",
-  "description": "Grok Build desktop GUI — Electron AI coding workspace for the official grok / Grok Build TUI runtime",
-  "homepage": "https://github.com/Jane-o-O-o-O/grok-build-gui",
+  "version": "0.1.1-ru.1",
+  "description": "Grok Build GUI — Russian community edition",
+  "homepage": "https://github.com/QueQueEpta/grok-build-gui-ru",
   "author": {
     "name": "Jane-o-O-o-O",
     "email": "Jane-o-O-o-O@users.noreply.github.com"
@@ -22,7 +22,8 @@
     "test:attachments": "node scripts/test-attachments.cjs",
     "preview": "node scripts/serve.cjs",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "test:localization": "node scripts/test-localization.cjs"
   },
   "devDependencies": {
     "electron": "^37.2.0",
@@ -47,7 +48,10 @@
     ],
     "win": {
       "icon": "build/icon.png",
-      "target": ["nsis", "portable"],
+      "target": [
+        "nsis",
+        "portable"
+      ],
       "artifactName": "Grok-Build-Desktop-${version}-Windows-${arch}.${ext}"
     },
     "nsis": {
@@ -64,7 +68,10 @@
     },
     "linux": {
       "icon": "build/icon.png",
-      "target": ["AppImage", "deb"],
+      "target": [
+        "AppImage",
+        "deb"
+      ],
       "category": "Development",
       "maintainer": "Jane-o-O-o-O <Jane-o-O-o-O@users.noreply.github.com>",
       "artifactName": "Grok-Build-Desktop-${version}-Linux-${arch}.${ext}"

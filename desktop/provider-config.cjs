@@ -1,3 +1,4 @@
+// Modified for the Russian community edition, 2026-10-07.
 const crypto = require("node:crypto");
 
 const BLOCK_START = "# >>> grok-desktop custom models >>>";
@@ -12,7 +13,7 @@ const PROBE_TOOL_NAMES = new Set(["probe_terminal", "probe_directory"]);
 function cleanBaseUrl(input) {
   const value = String(input || "").trim();
   const parsed = new URL(value);
-  if (!/^https?:$/.test(parsed.protocol)) throw new Error("URL 需要使用 http 或 https 协议");
+  if (!/^https?:$/.test(parsed.protocol)) throw new Error("URL должен использовать протокол http или https");
   parsed.hash = "";
   parsed.search = "";
   return parsed.toString().replace(/\/+$/, "");
@@ -44,7 +45,7 @@ function headersFor(protocol, key) {
 
 function parseModels(body, protocol) {
   const data = Array.isArray(body?.data) ? body.data : Array.isArray(body?.models) ? body.models : null;
-  if (!data) throw new Error("响应中没有模型列表");
+  if (!data) throw new Error("В ответе отсутствует список моделей");
   return data
     .map((item) => typeof item === "string" ? { id: item } : item)
     .filter((item) => typeof item?.id === "string" && item.id.trim())
@@ -66,7 +67,7 @@ function parseModels(body, protocol) {
 async function discoverModels({ baseUrl, apiKey }, fetchImpl = globalThis.fetch) {
   const url = cleanBaseUrl(baseUrl);
   const key = String(apiKey || "").trim();
-  if (!key) throw new Error("请填写 API 密钥");
+  if (!key) throw new Error("Введите API-ключ");
   const attempts = [];
   for (const protocol of protocolOrder(url, key)) {
     for (const endpoint of endpointCandidates(url)) {
@@ -84,7 +85,7 @@ async function discoverModels({ baseUrl, apiKey }, fetchImpl = globalThis.fetch)
         const body = await response.json();
         const models = parseModels(body, protocol);
         if (!models.length) {
-          attempts.push(`${protocol}: 返回了空模型列表`);
+          attempts.push(`${protocol}: получен пустой список моделей`);
           continue;
         }
         return { protocol, baseUrl: endpoint.baseUrl, listUrl: endpoint.listUrl, models };
@@ -93,7 +94,7 @@ async function discoverModels({ baseUrl, apiKey }, fetchImpl = globalThis.fetch)
       }
     }
   }
-  throw new Error(`模型发现失败。${attempts.slice(-3).join("；")}`);
+  throw new Error(`Не удалось получить список моделей. ${attempts.slice(-3).join("; ")}`);
 }
 
 function slug(value, fallback = "model") {
@@ -117,9 +118,9 @@ function classifyModelCapability(id, name = id) {
   const value = `${id || ""} ${name || ""}`.toLowerCase();
   const nonAgent = /embedding|reranker|tts|speech|asr|cosyvoice|sensevoice|(?:^|[\/_-])(image|audio|realtime|ocr|kolors|i2v|t2v|bge)(?:$|[\/_\-.0-9])/;
   if (nonAgent.test(value)) {
-    return { toolCapability: "unsupported", toolCapabilityDetail: "该模型类型不适合作为工具 Agent" };
+    return { toolCapability: "unsupported", toolCapabilityDetail: "Модель этого типа не подходит для агента с инструментами" };
   }
-  return { toolCapability: "unknown", toolCapabilityDetail: "尚未检测工具调用能力" };
+  return { toolCapability: "unknown", toolCapabilityDetail: "Поддержка вызова инструментов ещё не проверена" };
 }
 
 function apiEndpoint(baseUrl, endpoint) {
@@ -220,20 +221,20 @@ async function probeModelTools(payload, fetchImpl = globalThis.fetch) {
   const classified = classifyModelCapability(payload?.model, payload?.name);
   if (classified.toolCapability === "unsupported") return finish({ ...classified, apiBackend: payload?.protocol === "anthropic" ? "messages" : "chat_completions", streamToolCalls: false });
   const input = { baseUrl: cleanBaseUrl(payload.baseUrl), apiKey: String(payload.apiKey || "").trim(), model: String(payload.model || "").trim() };
-  if (!input.apiKey || !input.model) throw new Error("工具能力检测缺少 API 密钥或模型 ID");
+  if (!input.apiKey || !input.model) throw new Error("Для проверки инструментов необходимы API-ключ и ID модели");
   if (payload.protocol === "anthropic") {
     const result = await probeAnthropicMessages(input, fetchImpl);
-    if (result.capability === "native") return finish({ toolCapability: "native", toolCapabilityDetail: "支持 Anthropic 原生工具调用", apiBackend: "messages", streamToolCalls: false });
-    return finish({ toolCapability: "unsupported", toolCapabilityDetail: `未检测到工具调用支持${result.status ? `（HTTP ${result.status}）` : ""}`, apiBackend: "messages", streamToolCalls: false });
+    if (result.capability === "native") return finish({ toolCapability: "native", toolCapabilityDetail: "Поддерживает собственный протокол вызова инструментов Anthropic", apiBackend: "messages", streamToolCalls: false });
+    return finish({ toolCapability: "unsupported", toolCapabilityDetail: `Поддержка вызова инструментов не обнаружена${result.status ? `(HTTP ${result.status})` : ""}`, apiBackend: "messages", streamToolCalls: false });
   }
 
   const chat = await probeOpenAiChat(input, fetchImpl);
-  if (chat.capability === "native") return finish({ toolCapability: "native", toolCapabilityDetail: "支持 OpenAI Chat Completions 工具调用", apiBackend: "chat_completions", streamToolCalls: false });
+  if (chat.capability === "native") return finish({ toolCapability: "native", toolCapabilityDetail: "Поддерживает вызов инструментов OpenAI Chat Completions", apiBackend: "chat_completions", streamToolCalls: false });
   const responses = await probeOpenAiResponses(input, fetchImpl);
-  if (responses.capability === "native") return finish({ toolCapability: "native", toolCapabilityDetail: "已回退到 OpenAI Responses 工具协议", apiBackend: "responses", streamToolCalls: false });
-  if (chat.capability === "bridge") return finish({ toolCapability: "bridge", toolCapabilityDetail: "Chat Completions 工具名需要兼容桥修复", apiBackend: "chat_completions", streamToolCalls: false });
+  if (responses.capability === "native") return finish({ toolCapability: "native", toolCapabilityDetail: "Используется резервный протокол инструментов OpenAI Responses", apiBackend: "responses", streamToolCalls: false });
+  if (chat.capability === "bridge") return finish({ toolCapability: "bridge", toolCapabilityDetail: "Названия инструментов Chat Completions требуют адаптера совместимости", apiBackend: "chat_completions", streamToolCalls: false });
   const statuses = [chat.status, responses.status].filter(Boolean).join("/");
-  return finish({ toolCapability: "unsupported", toolCapabilityDetail: `未检测到兼容的工具调用协议${statuses ? `（HTTP ${statuses}）` : ""}`, apiBackend: "chat_completions", streamToolCalls: false });
+  return finish({ toolCapability: "unsupported", toolCapabilityDetail: `Совместимый протокол вызова инструментов не обнаружен${statuses ? `(HTTP ${statuses})` : ""}`, apiBackend: "chat_completions", streamToolCalls: false });
 }
 
 function makeLocalModelId(_providerId, remoteId) {

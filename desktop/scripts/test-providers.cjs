@@ -100,7 +100,7 @@ async function withServer(handler, run) {
   const refreshed = mergeDiscoveredProviderModels([
     { id: "existing-model", name: "Existing Model", toolCapability: "unknown" },
     { id: "new-model", name: "New Model", toolCapability: "unknown" }
-  ], [{ id: "existing-model", name: "Old Name", toolCapability: "native", toolCapabilityDetail: "已检测", apiBackend: "responses", toolProbeVersion: 3 }]);
+  ], [{ id: "existing-model", name: "Old Name", toolCapability: "native", toolCapabilityDetail: "Проверено", apiBackend: "responses", toolProbeVersion: 3 }]);
   assert.equal(refreshed[0].name, "Existing Model");
   assert.equal(refreshed[0].toolCapability, "native");
   assert.equal(refreshed[0].apiBackend, "responses");

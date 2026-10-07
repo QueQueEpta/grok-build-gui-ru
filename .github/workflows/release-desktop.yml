@@ -23,6 +23,8 @@ jobs:
           cache-dependency-path: desktop/package-lock.json
       - run: npm ci
       - run: npm run verify
+      - run: npm run test:localization
+      - run: npm run test:attachments
       - run: npm run test:providers
       - run: npm run test:bridge
       - run: npm run test:config

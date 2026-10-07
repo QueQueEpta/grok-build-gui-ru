@@ -1,3 +1,4 @@
+// Modified for the Russian community edition, 2026-10-07.
 const fs = require("node:fs");
 const { spawnSync } = require("node:child_process");
 
@@ -10,7 +11,7 @@ function runGit(cwd, args, timeout = 10_000) {
 }
 
 function readGitInfo(cwd) {
-  if (!validWorkspace(cwd)) return { ok: false, isRepo: false, error: "工作区不存在" };
+  if (!validWorkspace(cwd)) return { ok: false, isRepo: false, error: "Папка проекта не существует" };
   const inside = runGit(cwd, ["rev-parse", "--is-inside-work-tree"]);
   if (inside.status !== 0 || inside.stdout.trim() !== "true") return { ok: true, isRepo: false, branches: [], dirtyCount: 0 };
   const root = runGit(cwd, ["rev-parse", "--show-toplevel"]).stdout.trim();
@@ -40,22 +41,22 @@ function readGitInfo(cwd) {
 
 function switchGitBranch(cwd, branch) {
   const info = readGitInfo(cwd);
-  if (!info.ok || !info.isRepo) return { ok: false, error: "当前工作区不是 Git 仓库" };
-  if (typeof branch !== "string" || !info.branches.some((item) => item.name === branch)) return { ok: false, error: "本地分支不存在" };
+  if (!info.ok || !info.isRepo) return { ok: false, error: "Текущий проект не является репозиторием Git" };
+  if (typeof branch !== "string" || !info.branches.some((item) => item.name === branch)) return { ok: false, error: "Локальная ветка не существует" };
   const result = runGit(cwd, ["switch", branch], 30_000);
-  if (result.status !== 0) return { ok: false, error: (result.stderr || result.stdout || "切换分支失败").trim() };
+  if (result.status !== 0) return { ok: false, error: (result.stderr || result.stdout || "Не удалось переключить ветку").trim() };
   return { ok: true, message: (result.stderr || result.stdout || "").trim(), info: readGitInfo(cwd) };
 }
 
 function createGitBranch(cwd, branch) {
   const info = readGitInfo(cwd);
   const name = String(branch || "").trim();
-  if (!info.ok || !info.isRepo) return { ok: false, error: "当前工作区不是 Git 仓库" };
+  if (!info.ok || !info.isRepo) return { ok: false, error: "Текущий проект не является репозиторием Git" };
   const check = runGit(cwd, ["check-ref-format", "--branch", name]);
-  if (!name || check.status !== 0) return { ok: false, error: "请输入有效的 Git 分支名称" };
-  if (info.branches.some((item) => item.name === name)) return { ok: false, error: "该分支已经存在" };
+  if (!name || check.status !== 0) return { ok: false, error: "Введите допустимое название ветки Git" };
+  if (info.branches.some((item) => item.name === name)) return { ok: false, error: "Такая ветка уже существует" };
   const result = runGit(cwd, ["switch", "-c", name], 30_000);
-  if (result.status !== 0) return { ok: false, error: (result.stderr || result.stdout || "创建分支失败").trim() };
+  if (result.status !== 0) return { ok: false, error: (result.stderr || result.stdout || "Не удалось создать ветку").trim() };
   return { ok: true, message: (result.stderr || result.stdout || "").trim(), info: readGitInfo(cwd) };
 }
 

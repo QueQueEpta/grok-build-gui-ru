@@ -1,3 +1,4 @@
+// Modified for the Russian community edition, 2026-10-07.
 const fs = require("node:fs");
 
 function readAccountInfo(authPath, environment = process.env) {
@@ -15,7 +16,7 @@ function readAccountInfo(authPath, environment = process.env) {
       method: auth.auth_mode || "account",
       scope,
       email: auth.email || null,
-      name: fullName || auth.email?.split("@")[0] || "Grok 用户",
+      name: fullName || auth.email?.split("@")[0] || "Пользователь Grok",
       team: auth.team_name || auth.organization_name || null,
       role: auth.team_role || auth.organization_role || null,
       principalType: auth.principal_type || null,
@@ -24,9 +25,9 @@ function readAccountInfo(authPath, environment = process.env) {
     };
   }
   if (environment.XAI_API_KEY || environment.GROK_CODE_XAI_API_KEY) {
-    return { signedIn: true, method: "api_key", email: null, name: "API Key 用户", team: null, role: null };
+    return { signedIn: true, method: "api_key", email: null, name: "Пользователь API-ключа", team: null, role: null };
   }
-  return { signedIn: false, method: null, email: null, name: "登录 Grok", team: null, role: null };
+  return { signedIn: false, method: null, email: null, name: "Войти в Grok", team: null, role: null };
 }
 
 module.exports = { readAccountInfo };

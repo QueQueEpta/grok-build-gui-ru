@@ -1,3 +1,4 @@
+// Modified for the Russian community edition, 2026-10-07.
 const crypto = require("node:crypto");
 const fs = require("node:fs");
 const path = require("node:path");
@@ -16,7 +17,7 @@ function imageBytes(value) {
   if (value instanceof Uint8Array) return Buffer.from(value.buffer, value.byteOffset, value.byteLength);
   if (value instanceof ArrayBuffer) return Buffer.from(value);
   if (ArrayBuffer.isView(value)) return Buffer.from(value.buffer, value.byteOffset, value.byteLength);
-  throw new Error("剪贴板图片数据无效");
+  throw new Error("Недопустимые данные изображения в буфере обмена");
 }
 
 function matchesImageSignature(bytes, mimeType) {
@@ -31,11 +32,11 @@ function matchesImageSignature(bytes, mimeType) {
 function saveClipboardImage(payload, directory) {
   const mimeType = String(payload?.mimeType || "").toLowerCase().split(";")[0].trim();
   const extension = IMAGE_EXTENSIONS.get(mimeType);
-  if (!extension) throw new Error("剪贴板中的图片格式暂不支持");
+  if (!extension) throw new Error("Формат изображения в буфере обмена не поддерживается");
   const bytes = imageBytes(payload?.bytes);
-  if (!bytes.length) throw new Error("剪贴板图片为空");
-  if (bytes.length > MAX_CLIPBOARD_IMAGE_BYTES) throw new Error("剪贴板图片超过 25 MB");
-  if (!matchesImageSignature(bytes, mimeType)) throw new Error("剪贴板图片内容与格式不匹配");
+  if (!bytes.length) throw new Error("Изображение в буфере обмена пустое");
+  if (bytes.length > MAX_CLIPBOARD_IMAGE_BYTES) throw new Error("Изображение в буфере обмена превышает 25 МБ");
+  if (!matchesImageSignature(bytes, mimeType)) throw new Error("Содержимое изображения не соответствует формату");
   const targetDirectory = path.resolve(String(directory || ""));
   fs.mkdirSync(targetDirectory, { recursive: true });
   const filename = `pasted-${Date.now()}-${crypto.randomBytes(6).toString("hex")}.${extension}`;

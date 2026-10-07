@@ -1,3 +1,4 @@
+// Modified for the Russian community edition, 2026-10-07.
 const { app, BrowserWindow, dialog, ipcMain, shell, nativeTheme, safeStorage, session } = require("electron");
 const { spawn, spawnSync } = require("node:child_process");
 const fs = require("node:fs");
@@ -215,7 +216,7 @@ async function probeStoredModel(providerId, modelId) {
   const store = loadProviderStore();
   const provider = store.providers.find((item) => item.id === providerId);
   const model = provider?.models?.find((item) => item.localId === modelId || item.id === modelId);
-  if (!provider || !model) throw new Error("没有找到要检测的第三方模型");
+  if (!provider || !model) throw new Error("Сторонняя модель для проверки не найдена");
   const apiKey = decryptApiKey(provider.secret);
   const result = await probeModelTools({
     baseUrl: provider.baseUrl,
@@ -239,16 +240,16 @@ async function ensureModelCompatibility(modelId) {
     const result = await probeStoredModel(provider.id, model.localId);
     return { ...model, ...result, compatibilityChecked: true };
   } catch (error) {
-    return { ...model, toolCapabilityDetail: `自动检测失败：${error.message}`, compatibilityChecked: true };
+    return { ...model, toolCapabilityDetail: `Ошибка автоматической проверки: ${error.message}`, compatibilityChecked: true };
   }
 }
 
 async function refreshStoredProvider(providerId) {
   const store = loadProviderStore();
   const provider = store.providers.find((item) => item.id === providerId);
-  if (!provider) throw new Error("没有找到要刷新的第三方模型源");
+  if (!provider) throw new Error("Источник сторонних моделей для обновления не найден");
   const apiKey = decryptApiKey(provider.secret);
-  if (!apiKey) throw new Error("无法读取该模型源的 API 密钥");
+  if (!apiKey) throw new Error("Не удалось прочитать API-ключ источника моделей");
   const previousIds = new Set(provider.models.map((model) => model.id));
   const discovered = await discoverModels({ baseUrl: provider.baseUrl, apiKey }, (input, init) => session.defaultSession.fetch(input, init));
   const nextIds = new Set(discovered.models.map((model) => model.id));
@@ -270,9 +271,9 @@ async function refreshStoredProvider(providerId) {
 async function probeAllStoredModels(providerId, onProgress) {
   const store = loadProviderStore();
   const provider = store.providers.find((item) => item.id === providerId);
-  if (!provider) throw new Error("没有找到要检测的第三方模型源");
+  if (!provider) throw new Error("Источник сторонних моделей для проверки не найден");
   const apiKey = decryptApiKey(provider.secret);
-  if (!apiKey) throw new Error("无法读取该模型源的 API 密钥");
+  if (!apiKey) throw new Error("Не удалось прочитать API-ключ источника моделей");
   const models = provider.models || [];
   let cursor = 0;
   let completed = 0;
@@ -283,7 +284,7 @@ async function probeAllStoredModels(providerId, onProgress) {
       try {
         result = await probeModelTools({ baseUrl: provider.baseUrl, apiKey, protocol: provider.protocol, model: model.id, name: model.name }, (input, init) => session.defaultSession.fetch(input, init));
       } catch (error) {
-        result = { toolCapability: "unknown", toolCapabilityDetail: `检测失败：${error.message}`, streamToolCalls: false };
+        result = { toolCapability: "unknown", toolCapabilityDetail: `Ошибка проверки: ${error.message}`, streamToolCalls: false };
       }
       Object.assign(model, result, { toolCapabilityCheckedAt: Date.now() });
       completed += 1;
@@ -476,7 +477,7 @@ function relaySessionUpdate(runId, update, meta = {}) {
     const toolMeta = update?._meta?.["x.ai/tool"] || {};
     emit({
       runId, type: "tool_call", toolCallId: update.toolCallId,
-      title: update.title || toolMeta.label || toolMeta.name || "工具调用",
+      title: update.title || toolMeta.label || toolMeta.name || "Вызов инструмента",
       toolName: toolMeta.name || update.title || "tool",
       kind: toolMeta.kind || update.kind || "other",
       readOnly: Boolean(toolMeta.read_only), input: cappedValue(update.rawInput),
@@ -610,7 +611,7 @@ ipcMain.handle("auth:info", () => authInfo());
 
 ipcMain.handle("auth:login", async () => {
   const binary = locateGrok();
-  if (!binary) return { ok: false, error: "未检测到 Grok Runtime" };
+  if (!binary) return { ok: false, error: "Grok Runtime не обнаружен" };
   if (activeAuthRun) {
     if (activeAuthUrl) await shell.openExternal(activeAuthUrl);
     return { ok: true, running: true, browserOpened: Boolean(activeAuthUrl) };
@@ -635,25 +636,25 @@ ipcMain.handle("auth:login", async () => {
         openedOAuthUrls.add(url.href);
         activeAuthUrl = url.href;
         shell.openExternal(url.href).then(() => {
-          if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send("auth:event", { kind: "oauth-browser", text: "Runtime OAuth 授权页已打开，完成授权后会自动同步到应用" });
+          if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send("auth:event", { kind: "oauth-browser", text: "Страница авторизации Runtime OAuth открыта. После входа данные автоматически появятся в приложении" });
         }).catch((error) => send("error", error.message));
       } catch {}
     }
   };
-  send("preparing", "正在连接 auth.x.ai 并生成 Runtime OAuth 授权地址…");
+  send("preparing", "Подключение к auth.x.ai и создание адреса авторизации Runtime OAuth…");
   child.stdout.setEncoding("utf8"); child.stderr.setEncoding("utf8");
   child.stdout.on("data", (chunk) => send("output", chunk));
   child.stderr.on("data", (chunk) => send("output", chunk));
   child.on("error", (error) => { send("error", error.message); activeAuthRun = null; activeAuthUrl = null; });
-  child.on("exit", (code) => { send(code === 0 ? "complete" : "error", code === 0 ? "登录完成" : `登录进程退出：${code}`); activeAuthRun = null; activeAuthUrl = null; });
+  child.on("exit", (code) => { send(code === 0 ? "complete" : "error", code === 0 ? "Вход выполнен" : `Процесс входа завершён: ${code}`); activeAuthRun = null; activeAuthUrl = null; });
   return { ok: true, running: true, preparing: true };
 });
 
 ipcMain.handle("auth:logout", () => {
   const binary = locateGrok();
-  if (!binary) return { ok: false, error: "未检测到 Grok Runtime" };
+  if (!binary) return { ok: false, error: "Grok Runtime не обнаружен" };
   const result = spawnSync(binary, ["logout"], { encoding: "utf8", windowsHide: true, timeout: 30_000, env: runtimeEnvironment() });
-  if (result.error || result.status !== 0) return { ok: false, error: result.error?.message || result.stderr || "退出登录失败" };
+  if (result.error || result.status !== 0) return { ok: false, error: result.error?.message || result.stderr || "Не удалось выйти из аккаунта" };
   return { ok: true, info: authInfo() };
 });
 
@@ -679,7 +680,7 @@ ipcMain.handle("providers:probe", async (_event, payload) => {
 });
 
 ipcMain.handle("providers:probe-all", async (event, providerId) => {
-  if (activeProviderOperations.has(providerId)) return { ok: false, error: "该模型源已有操作正在进行" };
+  if (activeProviderOperations.has(providerId)) return { ok: false, error: "Для этого источника моделей уже выполняется операция" };
   activeProviderOperations.add(providerId);
   try {
     const result = await probeAllStoredModels(providerId, (progress) => {
@@ -694,7 +695,7 @@ ipcMain.handle("providers:probe-all", async (event, providerId) => {
 });
 
 ipcMain.handle("providers:refresh", async (_event, providerId) => {
-  if (activeProviderOperations.has(providerId)) return { ok: false, error: "该模型源已有操作正在进行" };
+  if (activeProviderOperations.has(providerId)) return { ok: false, error: "Для этого источника моделей уже выполняется операция" };
   activeProviderOperations.add(providerId);
   try {
     return { ok: true, ...(await refreshStoredProvider(providerId)) };
@@ -707,12 +708,12 @@ ipcMain.handle("providers:refresh", async (_event, providerId) => {
 
 ipcMain.handle("providers:save", async (_event, payload) => {
   try {
-    if (!payload || !Array.isArray(payload.models) || !payload.models.length) throw new Error("请至少选择一个模型");
+    if (!payload || !Array.isArray(payload.models) || !payload.models.length) throw new Error("Выберите хотя бы одну модель");
     const store = loadProviderStore();
     const providerId = payload.id || makeProviderId(payload.baseUrl);
     const previous = store.providers.find((item) => item.id === providerId);
     const secret = String(payload.apiKey || "").trim() ? encryptApiKey(payload.apiKey) : previous?.secret;
-    if (!secret) throw new Error("请填写 API 密钥");
+    if (!secret) throw new Error("Введите API-ключ");
     const provider = {
       id: providerId,
       name: payload.name || new URL(payload.baseUrl).host,
@@ -756,7 +757,7 @@ ipcMain.handle("providers:set-enabled", async (_event, payload) => {
     const enabledModelIds = new Set(Array.isArray(payload?.modelIds) ? payload.modelIds.map(String) : []);
     const store = loadProviderStore();
     const provider = store.providers.find((item) => item.id === providerId);
-    if (!provider) throw new Error("没有找到要更新的第三方模型源");
+    if (!provider) throw new Error("Источник сторонних моделей для изменения не найден");
     for (const model of provider.models || []) model.enabled = enabledModelIds.has(model.localId);
     provider.updatedAt = Date.now();
     const saved = persistProviderStore(store);
@@ -801,7 +802,7 @@ ipcMain.handle("shell:reveal", async (_event, target) => {
 });
 
 ipcMain.handle("shell:open-path", async (_event, target) => {
-  if (typeof target !== "string" || !target) return { ok: false, error: "路径无效" };
+  if (typeof target !== "string" || !target) return { ok: false, error: "Недопустимый путь" };
   const error = await shell.openPath(target);
   return error ? { ok: false, error } : { ok: true };
 });
@@ -829,7 +830,7 @@ ipcMain.handle("git:switch", (_event, payload) => switchGitBranch(payload?.cwd, 
 ipcMain.handle("git:create-branch", (_event, payload) => createGitBranch(payload?.cwd, payload?.branch));
 
 ipcMain.handle("workspace:review", async (_event, cwd) => {
-  if (!validWorkspace(cwd)) return { ok: false, error: "工作区不存在" };
+  if (!validWorkspace(cwd)) return { ok: false, error: "Папка проекта не существует" };
   const status = spawnSync("git", ["status", "--short"], { cwd, encoding: "utf8", windowsHide: true, timeout: 10_000 });
   const stat = spawnSync("git", ["diff", "--stat"], { cwd, encoding: "utf8", windowsHide: true, timeout: 10_000 });
   if (status.error) return { ok: false, error: status.error.message };
@@ -838,12 +839,12 @@ ipcMain.handle("workspace:review", async (_event, cwd) => {
 });
 
 ipcMain.handle("workspace:list", async (_event, { cwd, dir = "" }) => {
-  if (!validWorkspace(cwd)) return { ok: false, error: "工作区不存在" };
+  if (!validWorkspace(cwd)) return { ok: false, error: "Папка проекта не существует" };
   const ignored = new Set(["node_modules", "target", "dist", ".idea", ".vscode"]);
   const base = path.resolve(cwd);
   const target = path.resolve(cwd, String(dir || "."));
   const relativeRoot = path.relative(base, target);
-  if (relativeRoot.startsWith("..") || path.isAbsolute(relativeRoot)) return { ok: false, error: "目录超出工作区" };
+  if (relativeRoot.startsWith("..") || path.isAbsolute(relativeRoot)) return { ok: false, error: "Папка находится за пределами проекта" };
   try {
     const entries = fs.readdirSync(target, { withFileTypes: true })
       .filter((entry) => !ignored.has(entry.name) && !entry.name.startsWith(".preview-"))
@@ -862,7 +863,7 @@ ipcMain.handle("workspace:list", async (_event, { cwd, dir = "" }) => {
 });
 
 ipcMain.handle("workspace:files", async (_event, cwd) => {
-  if (!validWorkspace(cwd)) return { ok: false, error: "工作区不存在" };
+  if (!validWorkspace(cwd)) return { ok: false, error: "Папка проекта не существует" };
   const ignored = new Set([".git", "node_modules", "target", "dist", ".idea", ".vscode"]);
   const files = [];
   const walk = (directory, depth = 0) => {
@@ -883,16 +884,16 @@ ipcMain.handle("workspace:files", async (_event, cwd) => {
 });
 
 ipcMain.handle("workspace:read", async (_event, { cwd, file }) => {
-  if (!validWorkspace(cwd) || typeof file !== "string") return { ok: false, error: "文件路径无效" };
+  if (!validWorkspace(cwd) || typeof file !== "string") return { ok: false, error: "Недопустимый путь к файлу" };
   const target = path.resolve(cwd, file);
   const relative = path.relative(path.resolve(cwd), target);
-  if (relative.startsWith("..") || path.isAbsolute(relative)) return { ok: false, error: "文件超出工作区" };
+  if (relative.startsWith("..") || path.isAbsolute(relative)) return { ok: false, error: "Файл находится за пределами проекта" };
   try {
     const stat = fs.statSync(target);
-    if (!stat.isFile()) throw new Error("目标不是文件");
-    if (stat.size > 1024 * 1024) throw new Error("文件超过 1 MB，请在系统编辑器中打开");
+    if (!stat.isFile()) throw new Error("Выбранный объект не является файлом");
+    if (stat.size > 1024 * 1024) throw new Error("Файл превышает 1 МБ. Откройте его в системном редакторе");
     const buffer = fs.readFileSync(target);
-    if (buffer.includes(0)) throw new Error("这是二进制文件");
+    if (buffer.includes(0)) throw new Error("Это двоичный файл");
     return { ok: true, content: buffer.toString("utf8"), size: stat.size };
   } catch (error) {
     return { ok: false, error: error.message };
@@ -914,7 +915,7 @@ function closeTerminalSession(terminalId) {
 }
 
 ipcMain.handle("terminal:create", async (_event, { terminalId, cwd }) => {
-  if (typeof terminalId !== "string" || !terminalId || !validWorkspace(cwd)) return { ok: false, error: "终端参数无效" };
+  if (typeof terminalId !== "string" || !terminalId || !validWorkspace(cwd)) return { ok: false, error: "Недопустимые параметры терминала" };
   const existing = terminalSessions.get(terminalId);
   if (existing && !existing.child.killed) return { ok: true, terminalId, cwd: existing.cwd, shell: existing.shell };
   const shellExe = process.platform === "win32" ? "powershell.exe" : (process.env.SHELL || "/bin/sh");
@@ -952,15 +953,15 @@ ipcMain.handle("terminal:create", async (_event, { terminalId, cwd }) => {
 
 ipcMain.handle("terminal:write", async (_event, { terminalId, data }) => {
   const session = terminalSessions.get(terminalId);
-  if (!session || session.child.killed) return { ok: false, error: "终端会话已结束" };
-  if (typeof data !== "string" || data.length > 100_000) return { ok: false, error: "终端输入无效" };
+  if (!session || session.child.killed) return { ok: false, error: "Сеанс терминала завершён" };
+  if (typeof data !== "string" || data.length > 100_000) return { ok: false, error: "Недопустимые данные ввода терминала" };
   try { session.child.stdin.write(data); return { ok: true }; } catch (error) { return { ok: false, error: error.message }; }
 });
 
 ipcMain.handle("terminal:close", (_event, terminalId) => ({ ok: true, closed: closeTerminalSession(terminalId) }));
 
 ipcMain.handle("terminal:run", async (_event, { cwd, command }) => {
-  if (!validWorkspace(cwd) || typeof command !== "string" || !command.trim()) return { ok: false, error: "请输入命令" };
+  if (!validWorkspace(cwd) || typeof command !== "string" || !command.trim()) return { ok: false, error: "Введите команду" };
   return new Promise((resolve) => {
     const shellExe = process.platform === "win32" ? "powershell.exe" : "/bin/sh";
     const shellArgs = process.platform === "win32"
@@ -979,7 +980,7 @@ ipcMain.handle("terminal:run", async (_event, { cwd, command }) => {
 
 ipcMain.handle("grok:prompt", async (_event, payload) => {
   const binary = locateGrok();
-  if (!binary) return { ok: false, error: "Grok runtime was not found. Set GROK_BINARY or install the grok CLI." };
+  if (!binary) return { ok: false, error: "Движок Grok не найден. Укажите GROK_BINARY или установите Grok CLI." };
   if (!payload || typeof payload.prompt !== "string" || !payload.prompt.trim()) {
     return { ok: false, error: "Prompt is empty." };
   }

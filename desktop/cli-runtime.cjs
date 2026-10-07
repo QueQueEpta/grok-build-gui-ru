@@ -1,3 +1,4 @@
+// Modified for the Russian community edition, 2026-10-07.
 function effectivePrompt(payload) {
   let prompt = String(payload?.prompt || "");
   if (Array.isArray(payload?.attachments) && payload.attachments.length) {

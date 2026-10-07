@@ -5,3 +5,16 @@ desktop/node_modules/
 desktop/dist/
 desktop/.preview-*/
 desktop/screenshots/
+
+# Local credentials, runtime state and personal development files
+.env
+.env.*
+!.env.example
+.grok/
+.claude/
+.codex/
+auth.json
+providers.json
+*.log
+*.bak
+*.original

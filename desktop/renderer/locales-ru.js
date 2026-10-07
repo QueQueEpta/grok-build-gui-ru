@@ -1,2 +1,2 @@
 // Modified for the Russian community edition, 2026-10-07.
-// Native settings translations are included in i18n.js.
+// Russian translations are included in i18n.js.

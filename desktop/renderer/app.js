@@ -1,3 +1,4 @@
+// Modified for the Russian community edition, 2026-10-07.
 (() => {
   "use strict";
 
@@ -18,11 +19,11 @@
   const defaultState = {
     cwd: "",
     theme: "dark",
-    locale: "zh",
+    locale: "ru", russianLocaleMigration: 1,
     model: "auto",
-    modelLabel: "自动模型",
+    modelLabel: t("composer.autoModel"),
     effort: "high",
-    effortLabel: "高思考",
+    effortLabel: t("composer.highEffort"),
     permissionMode: "auto",
     activeThreadId: null,
     threads: [],
@@ -31,7 +32,7 @@
     sidebarHidden: false,
     sidebarWidth: 278,
     inspectorWidth: 430,
-    dockTabs: [{ id: "tasks", type: "tasks", title: "侧边任务" }],
+    dockTabs: [{ id: "tasks", type: "tasks", title: t("dock.sideTasks") }],
     activeDockTabId: "tasks"
   };
 
@@ -41,7 +42,7 @@
   let activeRunDiagnostics = [];
   let startedAt = 0;
   let durationTimer = null;
-  let runtimeModels = [{ id: "auto", label: "自动模型" }];
+  let runtimeModels = [{ id: "auto", label: t("composer.autoModel") }];
   let streamRenderFrame = null;
   let toolRenderFrame = null;
   let toolRenderForceFull = false;
@@ -61,7 +62,7 @@
   let applyingSettings = false;
   let fileDragDepth = 0;
   let nativeConfig = { values: {}, raw: "", path: "~/.grok/config.toml", integrations: {} };
-  let authState = { signedIn: false, name: "登录 Grok" };
+  let authState = { signedIn: false, name: t("account.login") };
   let authPollTimer = null;
   let authPollBusy = false;
   let runtimeState = { connected: false, version: null, binary: null };
@@ -99,7 +100,7 @@
       ["vim_mode", "bool"],
       ["prompt_suggestions", "bool"],
       ["voice_capture_mode", "select", { hold: "choice.hold", toggle: "choice.toggle" }],
-      ["voice_stt_language", "select", { en: "English", auto: "choice.system", ar: "العربية", cs: "Čeština", da: "Dansk", nl: "Nederlands", fil: "Filipino", fr: "Français", de: "Deutsch", hi: "हिन्दी", id: "Bahasa Indonesia", it: "Italiano", ja: "日本語", ko: "한국어", mk: "Македонски", ms: "Bahasa Melayu", fa: "فارسی", pl: "Polski", pt: "Português", ro: "Română", ru: "Русский", es: "Español", sv: "Svenska", th: "ไทย", tr: "Türkçe", vi: "Tiếng Việt" }],
+      ["voice_stt_language", "select", { en: "English", auto: "choice.system", ar: "العربية", cs: "Čeština", da: "Dansk", nl: "Nederlands", fil: "Filipino", fr: "Français", de: "Deutsch", hi: "हिन्दी", id: "Bahasa Indonesia", it: "Italiano", ja: "Японский", ko: "한국어", mk: "Македонски", ms: "Bahasa Melayu", fa: "فارسی", pl: "Polski", pt: "Português", ro: "Română", ru: "Русский", es: "Español", sv: "Svenska", th: "ไทย", tr: "Türkçe", vi: "Tiếng Việt" }],
       ["scroll_speed", "number"],
       ["scroll_mode", "select", { auto: "choice.autoDetect", wheel: "choice.wheel", trackpad: "choice.trackpad" }],
       ["scroll_lines", "number"],
@@ -156,71 +157,71 @@
   };
 
   const slashCommands = [
-    { id: "help", label: "/help", description: "浏览命令与快捷键", aliases: [] },
-    { id: "docs", label: "/docs", description: "打开使用指南或在线文档", aliases: ["/howto", "/guides"] },
-    { id: "new", label: "/new", description: "开始新会话", aliases: ["/clear"] },
-    { id: "home", label: "/home", description: "返回欢迎页", aliases: ["/welcome"] },
-    { id: "fork", label: "/fork", description: "从当前会话分叉并行 Agent", aliases: [] },
-    { id: "compact", label: "/compact", description: "压缩对话历史", aliases: [] },
-    { id: "copy", label: "/copy", description: "复制最近一条回复", aliases: [] },
-    { id: "find", label: "/find", description: "搜索对话滚动历史", aliases: [] },
-    { id: "history", label: "/history", description: "搜索提示历史", aliases: [] },
-    { id: "export", label: "/export", description: "导出当前对话", aliases: [] },
-    { id: "transcript", label: "/transcript", description: "查看完整对话记录", aliases: ["/log"] },
-    { id: "expand", label: "/expand", description: "展开最近折叠块", aliases: [] },
-    { id: "context", label: "/context", description: "查看上下文占用", aliases: [] },
-    { id: "model", label: "/model", description: "切换活动模型", aliases: ["/m"] },
-    { id: "effort", label: "/effort", description: "设置推理力度", aliases: [] },
-    { id: "always-approve", label: "/always-approve", description: "切换始终批准工具", aliases: ["/yolo"] },
-    { id: "auto", label: "/auto", description: "切换自动审批模式", aliases: [] },
-    { id: "multiline", label: "/multiline", description: "切换多行输入", aliases: ["/ml"] },
-    { id: "compact-mode", label: "/compact-mode", description: "切换紧凑界面", aliases: [] },
-    { id: "vim-mode", label: "/vim-mode", description: "切换 Vim 滚动快捷键", aliases: [] },
-    { id: "hooks", label: "/hooks", description: "查看 Hooks", aliases: [] },
-    { id: "plugins", label: "/plugins", description: "查看 Plugins", aliases: [] },
-    { id: "marketplace", label: "/marketplace", description: "打开 Marketplace", aliases: [] },
-    { id: "skills", label: "/skills", description: "查看 Skills", aliases: [] },
-    { id: "share", label: "/share", description: "分享当前会话", aliases: [] },
-    { id: "session-info", label: "/session-info", description: "显示会话信息", aliases: ["/status", "/info"] },
-    { id: "rename", label: "/rename", description: "重命名当前会话", aliases: ["/title"] },
-    { id: "dashboard", label: "/dashboard", description: "打开 Agent Dashboard", aliases: ["/agents-dashboard", "/sessions"] },
-    { id: "cd", label: "/cd", description: "切换工作区目录", aliases: [] },
-    { id: "theme", label: "/theme", description: "切换桌面主题", aliases: ["/t"] },
-    { id: "feedback", label: "/feedback", description: "发送反馈", aliases: [] },
-    { id: "announcements", label: "/announcements", description: "显示或隐藏公告", aliases: [] },
-    { id: "remember", label: "/remember", description: "保存一条记忆", aliases: [] },
-    { id: "plan", label: "/plan", description: "进入计划模式", aliases: [] },
-    { id: "view-plan", label: "/view-plan", description: "查看当前计划", aliases: ["/show-plan", "/plan-view"] },
-    { id: "resume", label: "/resume", description: "恢复历史会话", aliases: [] },
-    { id: "mcps", label: "/mcps", description: "查看 MCP 状态", aliases: [] },
-    { id: "btw", label: "/btw", description: "旁路提问，不打断主任务", aliases: [] },
-    { id: "recap", label: "/recap", description: "总结当前会话", aliases: [] },
-    { id: "terminal-setup", label: "/terminal-setup", description: "检查终端与剪贴板设置", aliases: ["/terminal-check", "/terminal-info"] },
-    { id: "voice", label: "/voice", description: "切换语音输入", aliases: [] },
-    { id: "loop", label: "/loop", description: "按间隔循环执行提示", aliases: [] },
-    { id: "imagine", label: "/imagine", description: "根据描述生成图片", aliases: [] },
-    { id: "imagine-video", label: "/imagine-video", description: "根据描述生成视频", aliases: [] },
-    { id: "timestamps", label: "/timestamps", description: "切换消息时间戳", aliases: [] },
-    { id: "settings", label: "/settings", description: "打开设置", aliases: ["/config", "/preferences", "/prefs"] },
-    { id: "privacy", label: "/privacy", description: "隐私与数据设置", aliases: [] },
-    { id: "rewind", label: "/rewind", description: "回退到之前的轮次", aliases: [] },
-    { id: "login", label: "/login", description: "登录 Grok 账号", aliases: [] },
-    { id: "logout", label: "/logout", description: "退出登录", aliases: [] },
-    { id: "import-claude", label: "/import-claude", description: "导入 Claude 设置", aliases: [] },
-    { id: "usage", label: "/usage", description: "查看用量或账单", aliases: ["/cost"] },
-    { id: "queue", label: "/queue", description: "查看排队中的提示", aliases: [] },
-    { id: "tasks", label: "/tasks", description: "查看后台任务与子 Agent", aliases: [] },
-    { id: "release-notes", label: "/release-notes", description: "查看版本说明", aliases: ["/changelog"] },
-    { id: "config-agents", label: "/config-agents", description: "管理 Agent 定义", aliases: ["/agents"] },
-    { id: "personas", label: "/personas", description: "管理 Personas", aliases: [] },
-    { id: "flush", label: "/flush", description: "立即将记忆写入磁盘", aliases: [] },
-    { id: "dream", label: "/dream", description: "运行记忆整理", aliases: [] },
-    { id: "memory", label: "/memory", description: "浏览和管理记忆", aliases: ["/mem"] },
-    { id: "goal", label: "/goal", description: "设置或检查自主目标", aliases: [] },
-    { id: "create-skill", label: "/create-skill", description: "创建新的 Grok Skill", aliases: [] },
-    { id: "code-review", label: "/code-review", description: "严格可维护性代码审阅", aliases: [] },
-    { id: "check-work", label: "/check-work", description: "用子 Agent 校验改动", aliases: [] },
-    { id: "quit", label: "/quit", description: "退出应用", aliases: ["/exit"] }
+    { id: "help", label: "/help", description: "Команды и сочетания клавиш", aliases: [] },
+    { id: "docs", label: "/docs", description: "Открыть руководство или документацию", aliases: ["/howto", "/guides"] },
+    { id: "new", label: "/new", description: "Начать новый диалог", aliases: ["/clear"] },
+    { id: "home", label: "/home", description: "Открыть главную страницу", aliases: ["/welcome"] },
+    { id: "fork", label: "/fork", description: "Создать параллельного агента из текущего диалога", aliases: [] },
+    { id: "compact", label: "/compact", description: "Сжать историю диалога", aliases: [] },
+    { id: "copy", label: "/copy", description: "Скопировать последний ответ", aliases: [] },
+    { id: "find", label: "/find", description: "Поиск по диалогу", aliases: [] },
+    { id: "history", label: "/history", description: "Поиск по истории запросов", aliases: [] },
+    { id: "export", label: "/export", description: "Экспортировать диалог", aliases: [] },
+    { id: "transcript", label: "/transcript", description: "Показать весь диалог", aliases: ["/log"] },
+    { id: "expand", label: "/expand", description: "Развернуть последний свёрнутый блок", aliases: [] },
+    { id: "context", label: "/context", description: "Показать использование контекста", aliases: [] },
+    { id: "model", label: "/model", description: "Сменить модель", aliases: ["/m"] },
+    { id: "effort", label: "/effort", description: "Настроить глубину рассуждений", aliases: [] },
+    { id: "always-approve", label: "/always-approve", description: "Переключить автоматическое одобрение инструментов", aliases: ["/yolo"] },
+    { id: "auto", label: "/auto", description: "Переключить автоматическую проверку разрешений", aliases: [] },
+    { id: "multiline", label: "/multiline", description: "Переключить многострочный ввод", aliases: ["/ml"] },
+    { id: "compact-mode", label: "/compact-mode", description: "Переключить компактный интерфейс", aliases: [] },
+    { id: "vim-mode", label: "/vim-mode", description: "Переключить прокрутку клавишами Vim", aliases: [] },
+    { id: "hooks", label: "/hooks", description: "Показать обработчики событий", aliases: [] },
+    { id: "plugins", label: "/plugins", description: "Показать плагины", aliases: [] },
+    { id: "marketplace", label: "/marketplace", description: "Открыть каталог расширений", aliases: [] },
+    { id: "skills", label: "/skills", description: "Показать навыки", aliases: [] },
+    { id: "share", label: "/share", description: "Поделиться диалогом", aliases: [] },
+    { id: "session-info", label: "/session-info", description: "Информация о диалоге", aliases: ["/status", "/info"] },
+    { id: "rename", label: "/rename", description: "Переименовать диалог", aliases: ["/title"] },
+    { id: "dashboard", label: "/dashboard", description: "Открыть панель агентов", aliases: ["/agents-dashboard", "/sessions"] },
+    { id: "cd", label: "/cd", description: "Сменить папку проекта", aliases: [] },
+    { id: "theme", label: "/theme", description: "Сменить тему", aliases: ["/t"] },
+    { id: "feedback", label: "/feedback", description: "Отправить отзыв", aliases: [] },
+    { id: "announcements", label: "/announcements", description: "Показать или скрыть объявления", aliases: [] },
+    { id: "remember", label: "/remember", description: "Сохранить запись в памяти", aliases: [] },
+    { id: "plan", label: "/plan", description: "Включить режим планирования", aliases: [] },
+    { id: "view-plan", label: "/view-plan", description: "Показать текущий план", aliases: ["/show-plan", "/plan-view"] },
+    { id: "resume", label: "/resume", description: "Возобновить диалог", aliases: [] },
+    { id: "mcps", label: "/mcps", description: "Показать состояние MCP", aliases: [] },
+    { id: "btw", label: "/btw", description: "Задать вопрос параллельно основной задаче", aliases: [] },
+    { id: "recap", label: "/recap", description: "Подвести итог диалога", aliases: [] },
+    { id: "terminal-setup", label: "/terminal-setup", description: "Проверить терминал и буфер обмена", aliases: ["/terminal-check", "/terminal-info"] },
+    { id: "voice", label: "/voice", description: "Переключить голосовой ввод", aliases: [] },
+    { id: "loop", label: "/loop", description: "Повторять запрос через заданный интервал", aliases: [] },
+    { id: "imagine", label: "/imagine", description: "Создать изображение по описанию", aliases: [] },
+    { id: "imagine-video", label: "/imagine-video", description: "Создать видео по описанию", aliases: [] },
+    { id: "timestamps", label: "/timestamps", description: "Переключить отметки времени сообщений", aliases: [] },
+    { id: "settings", label: "/settings", description: "Открыть настройки", aliases: ["/config", "/preferences", "/prefs"] },
+    { id: "privacy", label: "/privacy", description: "Конфиденциальность и данные", aliases: [] },
+    { id: "rewind", label: "/rewind", description: "Вернуться к предыдущему шагу", aliases: [] },
+    { id: "login", label: "/login", description: "Войти в аккаунт Grok", aliases: [] },
+    { id: "logout", label: "/logout", description: t("account.signOut"), aliases: [] },
+    { id: "import-claude", label: "/import-claude", description: "Импортировать настройки Claude", aliases: [] },
+    { id: "usage", label: "/usage", description: "Использование и платежи", aliases: ["/cost"] },
+    { id: "queue", label: "/queue", description: "Показать очередь запросов", aliases: [] },
+    { id: "tasks", label: "/tasks", description: "Показать фоновые задачи и субагентов", aliases: [] },
+    { id: "release-notes", label: "/release-notes", description: "Показать список изменений", aliases: ["/changelog"] },
+    { id: "config-agents", label: "/config-agents", description: "Управление агентами", aliases: ["/agents"] },
+    { id: "personas", label: "/personas", description: "Управление персонами", aliases: [] },
+    { id: "flush", label: "/flush", description: "Сохранить память на диск", aliases: [] },
+    { id: "dream", label: "/dream", description: "Упорядочить память", aliases: [] },
+    { id: "memory", label: "/memory", description: "Просмотр и управление памятью", aliases: ["/mem"] },
+    { id: "goal", label: "/goal", description: "Настроить или проверить автономную цель", aliases: [] },
+    { id: "create-skill", label: "/create-skill", description: "Создать новый навык Grok", aliases: [] },
+    { id: "code-review", label: "/code-review", description: "Проверить качество и поддерживаемость кода", aliases: [] },
+    { id: "check-work", label: "/check-work", description: "Проверить изменения с помощью субагентов", aliases: [] },
+    { id: "quit", label: "/quit", description: "Выйти из приложения", aliases: ["/exit"] }
   ];
 
   let slashPopover = null;
@@ -280,7 +281,8 @@
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
       const merged = { ...defaultState, ...saved, attachments: [] };
       merged.permissionMode = normalizePermissionMode(saved?.permissionMode || (saved?.alwaysApprove ? "always-approve" : "auto"));
-      merged.locale = saved?.locale === "en" ? "en" : "zh";
+      merged.locale = saved?.russianLocaleMigration === 1 && ["ru", "en"].includes(saved?.locale) ? saved.locale : "ru";
+      merged.russianLocaleMigration = 1;
       delete merged.alwaysApprove;
       if (!Array.isArray(merged.dockTabs) || !merged.dockTabs.length) merged.dockTabs = structuredClone(defaultState.dockTabs);
       merged.dockTabs = merged.dockTabs
@@ -398,7 +400,7 @@
     const blocks = [];
     let text = escaped.replace(/```([^\n]*)\n([\s\S]*?)```/g, (_match, language, code) => {
       const id = blocks.length;
-      blocks.push(`<div class="code-block"><div class="code-block__head"><span>${language || "text"}</span><button class="icon-button copy-code" title="复制"><svg><use href="#i-copy"/></svg></button></div><pre>${code.replace(/\n$/, "")}</pre></div>`);
+      blocks.push(`<div class="code-block"><div class="code-block__head"><span>${language || "text"}</span><button class="icon-button copy-code" title="Копировать"><svg><use href="#i-copy"/></svg></button></div><pre>${code.replace(/\n$/, "")}</pre></div>`);
       return `\n@@BLOCK${id}@@\n`;
     });
     const lines = text.split("\n");
@@ -439,10 +441,10 @@
       <h1>${escapeHtml(t("welcome.title"))}</h1>
       <p>${escapeHtml(t("welcome.body"))}</p>
       <div class="quick-actions">
-        <button class="quick-action" data-prompt="分析这个代码库的架构，并指出最值得优先改进的三个地方"><b>${escapeHtml(t("welcome.q1.title"))}</b><small>${escapeHtml(t("welcome.q1.desc"))}</small><svg><use href="#i-arrow-up"/></svg></button>
-        <button class="quick-action" data-prompt="检查当前 Git 改动，找出潜在 bug 并直接修复"><b>${escapeHtml(t("welcome.q2.title"))}</b><small>${escapeHtml(t("welcome.q2.desc"))}</small><svg><use href="#i-arrow-up"/></svg></button>
-        <button class="quick-action" data-prompt="运行项目测试，定位失败原因并修复"><b>${escapeHtml(t("welcome.q3.title"))}</b><small>${escapeHtml(t("welcome.q3.desc"))}</small><svg><use href="#i-arrow-up"/></svg></button>
-        <button class="quick-action" data-prompt="为这个项目补充一份清晰的开发者文档"><b>${escapeHtml(t("welcome.q4.title"))}</b><small>${escapeHtml(t("welcome.q4.desc"))}</small><svg><use href="#i-arrow-up"/></svg></button>
+        <button class="quick-action" data-prompt="Проанализируй архитектуру проекта и предложи три первоочередных улучшения"><b>${escapeHtml(t("welcome.q1.title"))}</b><small>${escapeHtml(t("welcome.q1.desc"))}</small><svg><use href="#i-arrow-up"/></svg></button>
+        <button class="quick-action" data-prompt="Проверь изменения Git, найди возможные ошибки и исправь их"><b>${escapeHtml(t("welcome.q2.title"))}</b><small>${escapeHtml(t("welcome.q2.desc"))}</small><svg><use href="#i-arrow-up"/></svg></button>
+        <button class="quick-action" data-prompt="Запусти тесты проекта, найди причины сбоев и исправь их"><b>${escapeHtml(t("welcome.q3.title"))}</b><small>${escapeHtml(t("welcome.q3.desc"))}</small><svg><use href="#i-arrow-up"/></svg></button>
+        <button class="quick-action" data-prompt="Напиши понятную документацию проекта для разработчиков"><b>${escapeHtml(t("welcome.q4.title"))}</b><small>${escapeHtml(t("welcome.q4.desc"))}</small><svg><use href="#i-arrow-up"/></svg></button>
       </div>
     </div>`;
   }
@@ -513,7 +515,7 @@
   function truncateToolText(value, max = 4500) {
     const text = prettyToolValue(value);
     if (text.length <= max) return text;
-    return `${text.slice(0, max)}\n…（已截断，展开后可复制可见部分）`;
+    return `${text.slice(0, max)}\n…(Сокращено. Разверните блок, чтобы скопировать видимую часть)`;
   }
 
   function toolNeedsAttention(message) {
@@ -544,7 +546,7 @@
   function toolPermissionNotice(message) {
     if (toolStatus(message.status, message.exitCode) !== "waiting_permission") return "";
     return `<div class="tool-card__actions">
-      <p>此操作正在由 CLI 权限策略判定；无法自动批准时会被拒绝。</p>
+      <p>Операцию проверяет политика разрешений CLI. Если автоматическое одобрение невозможно, она будет отклонена.</p>
     </div>`;
   }
 
@@ -553,9 +555,9 @@
     const live = toolIsLive(message);
     const open = forceOpen || toolNeedsAttention(message) || (live && status === "waiting_permission");
     const input = truncateToolText(message.input, 3500);
-    const output = truncateToolText(message.output || (message.exitCode != null ? `退出代码 ${message.exitCode}` : ""), 4500);
+    const output = truncateToolText(message.output || (message.exitCode != null ? `Код выхода ${message.exitCode}` : ""), 4500);
     const duration = formatToolDuration(message);
-    const meta = [message.currentDir ? `目录  ${message.currentDir}` : "", message.exitCode != null ? `退出  ${message.exitCode}` : "", duration].filter(Boolean);
+    const meta = [message.currentDir ? `Папка  ${message.currentDir}` : "", message.exitCode != null ? `Выход  ${message.exitCode}` : "", duration].filter(Boolean);
     const locations = Array.isArray(message.locations) ? message.locations : [];
     const locationLine = locations.slice(0, 3).map((item) => item?.path || item?.file || item).filter(Boolean).join(" · ");
     return `<details class="tool-card tool-card--${status} ${side ? "tool-card--side" : ""}" data-message-id="${escapeHtml(message.id)}" data-tool-call-id="${escapeHtml(message.toolCallId || "")}" ${open ? "open" : ""}>
@@ -568,9 +570,9 @@
       <div class="tool-card__body">
         ${toolPermissionNotice(message)}
         ${message.description ? `<p class="tool-card__description">${escapeHtml(message.description)}</p>` : ""}
-        ${locationLine ? `<p class="tool-card__description">涉及 ${escapeHtml(locationLine)}</p>` : ""}
-        ${input ? `<section><header>输入</header><pre>${escapeHtml(input)}</pre></section>` : ""}
-        ${output ? `<section><header>输出</header><pre>${escapeHtml(output)}</pre></section>` : (live ? '<div class="tool-card__waiting"><i></i>正在等待 Runtime 返回结果…</div>' : "")}
+        ${locationLine ? `<p class="tool-card__description">Затронуто ${escapeHtml(locationLine)}</p>` : ""}
+        ${input ? `<section><header>Ввод</header><pre>${escapeHtml(input)}</pre></section>` : ""}
+        ${output ? `<section><header>Вывод</header><pre>${escapeHtml(output)}</pre></section>` : (live ? '<div class="tool-card__waiting"><i></i>Ожидание результата Runtime…</div>' : "")}
         ${meta.length ? `<footer>${meta.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}</footer>` : ""}
       </div>
     </details>`;
@@ -602,10 +604,10 @@
     const identity = assistant ? '<span class="grok-mark" aria-hidden="true"></span>' : "YOU";
     const emptyBody = assistant && !String(message.text || "").trim() && activeAssistantMessage?.id === message.id;
     return `<article class="message message--${assistant ? "assistant" : "user"} ${continuation ? "message--continuation" : ""}" data-message-id="${message.id}">
-      ${continuation ? "" : `<div class="message__meta"><span class="message__identity">${identity}</span><b>${assistant ? "Grok" : "你"}</b><span>${formatTime(message.createdAt)}</span></div>`}
+      ${continuation ? "" : `<div class="message__meta"><span class="message__identity">${identity}</span><b>${assistant ? "Grok" : "Вы"}</b><span>${formatTime(message.createdAt)}</span></div>`}
       ${assistant ? `<div class="message__thinking-slot">${thinkingMarkup(message, activeAssistantMessage?.id === message.id)}</div>` : ""}
       <div class="message__body ${emptyBody ? "is-streaming" : ""}">${assistant ? (emptyBody && !message.thought ? '<span class="stream-caret" aria-hidden="true"></span>' : markdown(message.text)) : escapeHtml(message.text)}</div>
-      ${assistant && !continuation ? '<div class="message-actions"><button class="icon-button copy-message" title="复制"><svg><use href="#i-copy"/></svg></button></div>' : ""}
+      ${assistant && !continuation ? '<div class="message-actions"><button class="icon-button copy-message" title="Копировать"><svg><use href="#i-copy"/></svg></button></div>' : ""}
     </article>`;
   }
 
@@ -658,7 +660,7 @@
         if (String(activeAssistantMessage.text || "").trim()) {
           block?.classList.remove("is-active");
           if (block) block.open = false;
-          const label = block?.querySelector("summary b"); if (label) label.textContent = "思考过程";
+          const label = block?.querySelector("summary b"); if (label) label.textContent = t("thinking.done");
           const signal = block?.querySelector(".thinking-block__signal"); if (signal) signal.innerHTML = '<svg><use href="#i-check"/></svg>';
         }
       }
@@ -849,21 +851,21 @@
     const abs = workspaceAbsolute(entry.path);
     const actions = entry.type === "dir"
       ? [
-          { id: "reveal", label: "在资源管理器中显示", icon: "i-folder" },
-          { id: "open-app", label: "用系统打开", icon: "i-external" },
+          { id: "reveal", label: t("file.reveal"), icon: "i-folder" },
+          { id: "open-app", label: t("file.openApp"), icon: "i-external" },
           { sep: true },
-          { id: "copy-path", label: "复制路径", icon: "i-copy" },
-          { id: "copy-rel", label: "复制相对路径", icon: "i-copy" },
-          { id: "copy-name", label: "复制名称", icon: "i-copy" }
+          { id: "copy-path", label: t("file.copyPath"), icon: "i-copy" },
+          { id: "copy-rel", label: t("file.copyRel"), icon: "i-copy" },
+          { id: "copy-name", label: t("file.copyName"), icon: "i-copy" }
         ]
       : [
-          { id: "open", label: "打开预览", icon: "i-file" },
-          { id: "open-app", label: "用系统打开", icon: "i-external" },
-          { id: "reveal", label: "在资源管理器中显示", icon: "i-folder" },
+          { id: "open", label: t("file.openPreview"), icon: "i-file" },
+          { id: "open-app", label: t("file.openApp"), icon: "i-external" },
+          { id: "reveal", label: t("file.reveal"), icon: "i-folder" },
           { sep: true },
-          { id: "copy-path", label: "复制路径", icon: "i-copy" },
-          { id: "copy-rel", label: "复制相对路径", icon: "i-copy" },
-          { id: "copy-name", label: "复制文件名", icon: "i-copy" }
+          { id: "copy-path", label: t("file.copyPath"), icon: "i-copy" },
+          { id: "copy-rel", label: t("file.copyRel"), icon: "i-copy" },
+          { id: "copy-name", label: t("file.copyFileName"), icon: "i-copy" }
         ];
     menu.innerHTML = actions.map((item) => item.sep
       ? "<hr/>"
@@ -883,16 +885,16 @@
       else if (action === "reveal" && api) api.revealPath(abs);
       else if (action === "open-app" && api) {
         const result = await api.openPath(abs);
-        if (!result?.ok) toast("无法打开", result?.error || abs);
+        if (!result?.ok) toast("Не удалось открыть", result?.error || abs);
       } else if (action === "copy-path") {
         await navigator.clipboard.writeText(abs);
-        toast("已复制路径", abs);
+        toast("Путь скопирован", abs);
       } else if (action === "copy-rel") {
         await navigator.clipboard.writeText(entry.path);
-        toast("已复制相对路径", entry.path);
+        toast("Относительный путь скопирован", entry.path);
       } else if (action === "copy-name") {
         await navigator.clipboard.writeText(entry.name);
-        toast("已复制名称", entry.name);
+        toast("Название скопировано", entry.name);
       }
     }));
   }
@@ -937,32 +939,32 @@
     const button = $("#branchButton");
     button.classList.toggle("is-no-repo", !gitState.isRepo);
     button.classList.toggle("is-dirty", Boolean(gitState.isRepo && gitState.dirtyCount));
-    $("#branchName").textContent = gitState.isRepo ? gitState.current : "非 Git 工作区";
-    $("#branchDirtyDot").title = gitState.isRepo ? (gitState.dirtyCount ? `${gitState.dirtyCount} 个未提交修改` : "工作区干净") : "未检测到 Git 仓库";
+    $("#branchName").textContent = gitState.isRepo ? gitState.current : t("git.noRepo");
+    $("#branchDirtyDot").title = gitState.isRepo ? (gitState.dirtyCount ? `${gitState.dirtyCount} изменений без коммита` : t("git.clean")) : t("git.noRepoTitle");
   }
 
   function renderBranchPopover() {
     const title = $("#branchPopoverTitle"); const summary = $("#branchSummary"); const list = $("#branchList");
     if (!gitState.isRepo) {
-      title.textContent = "未检测到 Git 仓库";
-      summary.className = "branch-summary"; summary.innerHTML = "选择一个 Git 工作区后可查看和切换分支";
+      title.textContent = t("git.noRepoTitle");
+      summary.className = "branch-summary"; summary.innerHTML = t("git.noRepoBody");
       $("#branchSearch").closest(".branch-search").hidden = true; $("#branchCreateForm").hidden = true;
-      list.innerHTML = '<div class="context-empty">当前目录不在 Git 工作树中</div>'; $("#branchRootLabel").textContent = basename(state.cwd); return;
+      list.innerHTML = '<div class="context-empty">Текущая папка не является рабочим деревом Git</div>'; $("#branchRootLabel").textContent = basename(state.cwd); return;
     }
     $("#branchSearch").closest(".branch-search").hidden = false; $("#branchCreateForm").hidden = false;
     title.textContent = gitState.detached ? `Detached · ${gitState.current}` : gitState.current;
     summary.className = `branch-summary ${gitState.dirtyCount ? "is-dirty" : ""}`;
     const divergence = [gitState.ahead ? `↑${gitState.ahead}` : "", gitState.behind ? `↓${gitState.behind}` : ""].filter(Boolean).join(" ");
-    summary.innerHTML = `<span class="branch-summary-dot"></span><b>${gitState.dirtyCount ? `${gitState.dirtyCount} 个未提交修改` : "工作区干净"}</b>${gitState.stagedCount ? `<span>· ${gitState.stagedCount} 个已暂存</span>` : ""}${gitState.upstream ? `<span>· ${escapeHtml(gitState.upstream)} ${divergence}</span>` : '<span>· 无上游分支</span>'}`;
+    summary.innerHTML = `<span class="branch-summary-dot"></span><b>${gitState.dirtyCount ? `${gitState.dirtyCount} изменений без коммита` : t("git.clean")}</b>${gitState.stagedCount ? `<span>· ${gitState.stagedCount} изменений в индексе</span>` : ""}${gitState.upstream ? `<span>· ${escapeHtml(gitState.upstream)} ${divergence}</span>` : '<span>· Нет отслеживаемой ветки</span>'}`;
     const branches = (gitState.branches || []).filter((branch) => branch.name.toLowerCase().includes(branchFilter.toLowerCase()));
-    list.innerHTML = branches.map((branch) => `<button class="branch-item ${branch.current ? "is-current" : ""}" data-git-branch="${escapeHtml(branch.name)}" ${branch.current ? "disabled" : ""}><svg><use href="#i-git"/></svg><span><b>${escapeHtml(branch.name)}</b><small>${escapeHtml([branch.upstream, branch.updated].filter(Boolean).join(" · ") || "本地分支")}</small></span>${branch.current ? "<em>当前</em>" : ""}</button>`).join("") || '<div class="context-empty">没有匹配的本地分支</div>';
+    list.innerHTML = branches.map((branch) => `<button class="branch-item ${branch.current ? "is-current" : ""}" data-git-branch="${escapeHtml(branch.name)}" ${branch.current ? "disabled" : ""}><svg><use href="#i-git"/></svg><span><b>${escapeHtml(branch.name)}</b><small>${escapeHtml([branch.upstream, branch.updated].filter(Boolean).join(" · ") || "Локальная ветка")}</small></span>${branch.current ? "<em>Текущая</em>" : ""}</button>`).join("") || '<div class="context-empty">Подходящих локальных веток нет</div>';
     $("#branchRootLabel").textContent = basename(gitState.root || state.cwd);
     $$('[data-git-branch]', list).forEach((button) => button.addEventListener("click", () => switchBranch(button.dataset.gitBranch, button)));
   }
 
   async function refreshGitInfo({ quiet = false } = {}) {
-    if (!quiet) $("#branchName").textContent = "检查分支…";
-    const next = api ? await api.gitInfo(state.cwd) : { ok: true, isRepo: true, root: state.cwd, current: "main", dirtyCount: 0, stagedCount: 0, branches: [{ name: "main", current: true, updated: "刚刚" }, { name: "feature/ui", current: false, updated: "2 小时前" }] };
+    if (!quiet) $("#branchName").textContent = t("git.checking");
+    const next = api ? await api.gitInfo(state.cwd) : { ok: true, isRepo: true, root: state.cwd, current: "main", dirtyCount: 0, stagedCount: 0, branches: [{ name: "main", current: true, updated: "только что" }, { name: "feature/ui", current: false, updated: "2 часа назад" }] };
     const info = next?.ok === false ? { ok: true, isRepo: false, branches: [], dirtyCount: 0, error: next.error } : next;
     const changed = gitState.current !== info.current
       || gitState.isRepo !== info.isRepo
@@ -978,24 +980,24 @@
   }
 
   async function switchBranch(branch, button) {
-    if (activeRun) { toast("任务正在运行", "完成或停止当前任务后再切换分支"); return; }
+    if (activeRun) { toast("Задача выполняется", "Перед сменой ветки завершите или остановите задачу"); return; }
     button.disabled = true;
     const result = api ? await api.switchGitBranch(state.cwd, branch) : { ok: true, info: { ...gitState, current: branch, branches: gitState.branches.map((item) => ({ ...item, current: item.name === branch })) } };
     button.disabled = false;
-    if (!result.ok) { toast("分支切换失败", result.error); return; }
+    if (!result.ok) { toast("Не удалось сменить ветку", result.error); return; }
     gitState = result.info; updateBranchPill(); renderBranchPopover(); $("#branchPopover").hidden = true; $("#branchButton").setAttribute("aria-expanded", "false");
-    refreshActiveDockPane(); toast("已切换 Git 分支", branch);
+    refreshActiveDockPane(); toast("Ветка Git изменена", branch);
   }
 
   async function createBranch(event) {
     event.preventDefault();
     const input = $("#branchCreateInput"); const branch = input.value.trim(); if (!branch) return;
-    if (activeRun) { toast("任务正在运行", "完成或停止当前任务后再创建分支"); return; }
+    if (activeRun) { toast("Задача выполняется", "Перед созданием ветки завершите или остановите задачу"); return; }
     const submit = $("#branchCreateForm button"); submit.disabled = true;
     const result = api ? await api.createGitBranch(state.cwd, branch) : { ok: true, info: { ...gitState, current: branch, branches: [{ name: branch, current: true }, ...gitState.branches.map((item) => ({ ...item, current: false }))] } };
     submit.disabled = false;
-    if (!result.ok) { toast("创建分支失败", result.error); return; }
-    input.value = ""; gitState = result.info; updateBranchPill(); renderBranchPopover(); toast("已创建并切换分支", branch);
+    if (!result.ok) { toast("Не удалось создать ветку", result.error); return; }
+    input.value = ""; gitState = result.info; updateBranchPill(); renderBranchPopover(); toast("Ветка создана и выбрана", branch);
   }
 
   async function toggleBranchPopover(event) {
@@ -1016,7 +1018,7 @@
     $("#fileCount").textContent = `${state.attachments.length} FILES`;
     if (!state.attachments.length) {
       target.className = "context-empty";
-      target.innerHTML = '<svg><use href="#i-folder"/></svg><span>附件和修改过的文件会显示在这里</span>';
+      target.innerHTML = '<svg><use href="#i-folder"/></svg><span>Здесь появятся вложения и изменённые файлы</span>';
     } else {
       target.className = "context-files";
       target.innerHTML = state.attachments.map((file) => `<button class="context-file" data-file="${escapeHtml(file)}"><svg><use href="#i-paperclip"/></svg><span>${escapeHtml(basename(file))}</span></button>`).join("");
@@ -1127,9 +1129,9 @@
 
   function initializeSideTaskPane(tab, pane) {
     tab.messages ||= [];
-    pane.innerHTML = `<div class="dock-pane__title side-task-head"><div><small>SIDE TASK</small><h2>${escapeHtml(tab.title)}</h2></div></div>
+    pane.innerHTML = `<div class="dock-pane__title side-task-head"><div><small>ПАРАЛЛЕЛЬНАЯ ЗАДАЧА</small><h2>${escapeHtml(tab.title)}</h2></div></div>
       <div class="side-task-messages" data-side-messages></div>
-      <form class="side-task-composer" data-side-form><textarea rows="1" data-side-input placeholder="在这个并行对话中继续任务…"></textarea><button type="submit" data-side-send title="发送"><svg><use href="#i-send"/></svg></button></form>`;
+      <form class="side-task-composer" data-side-form><textarea rows="1" data-side-input placeholder="Продолжить задачу в параллельном диалоге…"></textarea><button type="submit" data-side-send title="Отправить"><svg><use href="#i-send"/></svg></button></form>`;
     const form = $("[data-side-form]", pane); const input = $("[data-side-input]", pane);
     form.addEventListener("submit", (event) => { event.preventDefault(); sendSideTask(tab.id); });
     input.addEventListener("keydown", (event) => {
@@ -1144,7 +1146,7 @@
     const assistant = message.role === "assistant";
     const continuation = Boolean(assistant && message.continuation);
     return `<article class="side-message side-message--${assistant ? "assistant" : "user"} ${continuation ? "side-message--continuation" : ""}" data-side-message-id="${message.id}">
-      ${continuation ? "" : `<header>${assistant ? '<span class="grok-mark" aria-hidden="true"></span><b>Grok</b>' : "<b>你</b>"}<time>${formatTime(message.createdAt)}</time></header>`}
+      ${continuation ? "" : `<header>${assistant ? '<span class="grok-mark" aria-hidden="true"></span><b>Grok</b>' : "<b>Вы</b>"}<time>${formatTime(message.createdAt)}</time></header>`}
       ${assistant ? thinkingMarkup(message, Boolean(tab?.runId && message.id === tab.activeAssistantId), true) : ""}
       <div class="side-message__body">${assistant ? markdown(message.text || "") : escapeHtml(message.text || "")}</div>
     </article>`;
@@ -1154,7 +1156,7 @@
     return {
       id: uid(), kind: "tool", toolCallId: event.toolCallId || `tool-${uid()}`,
       toolName: event.toolName || null, kindName: event.kind || null,
-      title: event.title || event.toolName || "Runtime 工具", status: toolStatus(event.status),
+      title: event.title || event.toolName || t("tool.runtimeTool"), status: toolStatus(event.status),
       input: event.input ?? null, output: event.output || "", exitCode: event.exitCode ?? null,
       currentDir: event.currentDir || null, description: event.description || null,
       locations: event.locations || null, createdAt: event.timestamp || Date.now(), startedAt: Date.now()
@@ -1218,7 +1220,7 @@
     if (!pane) return;
     const target = $("[data-side-messages]", pane);
     if (!tab.messages?.length) {
-      target.innerHTML = `<div class="side-task-empty"><span class="grok-mark" aria-hidden="true"></span><h3>并行处理一个新任务</h3><p>在这里开启独立会话，与主对话并行推进。</p></div>`;
+      target.innerHTML = `<div class="side-task-empty"><span class="grok-mark" aria-hidden="true"></span><h3>Начать параллельную задачу</h3><p>Создайте отдельный диалог для работы параллельно основной задаче.</p></div>`;
     } else {
       const chunks = [];
       for (let index = 0; index < tab.messages.length;) {
@@ -1262,16 +1264,16 @@
 
   function mainConversationContext() {
     const thread = activeThread();
-    if (!thread?.messages?.length) return "主对话目前还没有消息。";
+    if (!thread?.messages?.length) return "В основном диалоге пока нет сообщений.";
     return thread.messages.filter((message) => ["user", "assistant"].includes(message.role)).slice(-10)
-      .map((message) => `${message.role === "user" ? "用户" : "Grok"}: ${String(message.text || "").slice(0, 1800)}`).join("\n\n");
+      .map((message) => `${message.role === "user" ? "Пользователь" : "Grok"}: ${String(message.text || "").slice(0, 1800)}`).join("\n\n");
   }
 
   async function sendSideTask(tabId) {
     const tab = state.dockTabs.find((item) => item.id === tabId && item.type === "tasks");
     const pane = [...$$('[data-dock-id]')].find((item) => item.dataset.dockId === tabId);
     if (!tab || !pane) return;
-    if (tab.runId) { if (api) await api.cancelPrompt(tab.runId); finishSideTask(tab, "已停止"); return; }
+    if (tab.runId) { if (api) await api.cancelPrompt(tab.runId); finishSideTask(tab, t("tool.cancelled")); return; }
     const input = $("[data-side-input]", pane); const prompt = input.value.trim();
     if (!prompt) return;
     tab.messages ||= [];
@@ -1282,14 +1284,14 @@
     renderSideTaskPane(tab, pane); saveState();
     if (!api) {
       tab.runId = `demo-${uid()}`;
-      assistant.text = `侧边任务已收到：**${prompt}**`;
-      setTimeout(() => finishSideTask(tab, "预览完成"), 350);
+      assistant.text = `Параллельная задача получена: **${prompt}**`;
+      setTimeout(() => finishSideTask(tab, "Предпросмотр завершён"), 350);
       renderSideTaskPane(tab, pane); return;
     }
-    const sharedPrompt = `你正在 Grok Build 的侧边对话中并行处理任务。使用同一项目记忆，并参考下面主对话的最新上下文；直接完成侧边任务。\n\n<主对话最新上下文>\n${mainConversationContext()}\n</主对话最新上下文>\n\n<侧边任务>\n${prompt}\n</侧边任务>`;
+    const sharedPrompt = `Вы выполняете параллельную задачу в Grok Build. Используйте память проекта и контекст основного диалога ниже. Выполните задачу.\n\n<main-context>\n${mainConversationContext()}\n</main-context>\n\n<side-task>\n${prompt}\n</side-task>`;
     const result = await api.sendPrompt({ clientId: tab.id, prompt: sharedPrompt, cwd: tab.cwd || state.cwd, sessionId: tab.sessionId, model: state.model, effort: state.effort, permissionMode: state.permissionMode, attachments: [] });
-    if (!result.ok) { assistant.text = `启动 Grok 时出现问题：${result.error}`; finishSideTask(tab, "启动失败"); return; }
-    if (result.compatibility?.compatibilityChecked) { applyModelCompatibility(result.compatibility); toast("模型工具能力已检测", result.compatibility.toolCapabilityDetail || "已更新第三方模型兼容配置"); }
+    if (!result.ok) { assistant.text = `Не удалось запустить Grok: ${result.error}`; finishSideTask(tab, "Ошибка запуска"); return; }
+    if (result.compatibility?.compatibilityChecked) { applyModelCompatibility(result.compatibility); toast("Возможности инструментов модели проверены", result.compatibility.toolCapabilityDetail || "Настройки совместимости сторонней модели обновлены"); }
     tab.runId = result.runId; renderSideTaskPane(tab, pane); saveState();
   }
 
@@ -1308,9 +1310,9 @@
       if (event.type === "text") { assistant.text += event.data || ""; scheduleSideStreamingRender(tab); return; }
       assistant.thought = (assistant.thought || "") + (event.data || ""); scheduleSideStreamingRender(tab); return;
     }
-    else if (event.type === "error" && assistant) assistant.text += `\n\n**错误：** ${event.message}`;
-    else if (event.type === "end") { tab.sessionId = event.sessionId || tab.sessionId; finishSideTask(tab, event.stopReason || "完成"); return; }
-    else if (event.type === "process_exit" && event.code !== 0) { finishSideTask(tab, `进程退出 ${event.code ?? event.signal}`); return; }
+    else if (event.type === "error" && assistant) assistant.text += `\n\n**Ошибка：** ${event.message}`;
+    else if (event.type === "end") { tab.sessionId = event.sessionId || tab.sessionId; finishSideTask(tab, event.stopReason || t("settings.done")); return; }
+    else if (event.type === "process_exit" && event.code !== 0) { finishSideTask(tab, `Процесс завершён ${event.code ?? event.signal}`); return; }
     const pane = [...$$('[data-dock-id]')].find((item) => item.dataset.dockId === tab.id);
     renderSideTaskPane(tab, pane);
   }
@@ -1320,7 +1322,7 @@
     if (assistant && !assistant.text && !assistant.thought) tab.messages.splice(tab.messages.indexOf(assistant), 1);
     for (const tool of (tab.messages || []).filter((message) => message.kind === "tool")) {
       if (["pending", "in_progress", "waiting_permission"].includes(toolStatus(tool.status))) {
-        tool.status = /停止|失败|退出|error|cancel/i.test(String(reason)) ? "cancelled" : "completed";
+        tool.status = /останов|ошиб|Выход|останов|ошиб|процесс заверш|error|cancel/i.test(String(reason)) ? "cancelled" : "completed";
       }
     }
     tab.runId = null; tab.activeAssistantId = null;
@@ -1329,10 +1331,10 @@
 
   function initializeTerminalPane(tab, pane) {
     tab.cwd ||= state.cwd; tab.output ||= ""; tab.history ||= [];
-    pane.innerHTML = `<div class="dock-pane__title"><div><small>NATIVE SHELL SESSION</small><h2>${escapeHtml(tab.title)}</h2></div><span class="terminal-cwd" title="${escapeHtml(tab.cwd)}">${escapeHtml(basename(tab.cwd))}</span></div>
-      <div class="terminal-toolbar"><span data-terminal-state><i></i>正在启动</span><button type="button" data-terminal-clear>清屏</button><button type="button" data-terminal-restart><svg><use href="#i-refresh"/></svg>重启</button></div>
+    pane.innerHTML = `<div class="dock-pane__title"><div><small>СЕАНС ТЕРМИНАЛА</small><h2>${escapeHtml(tab.title)}</h2></div><span class="terminal-cwd" title="${escapeHtml(tab.cwd)}">${escapeHtml(basename(tab.cwd))}</span></div>
+      <div class="terminal-toolbar"><span data-terminal-state><i></i>Запуск</span><button type="button" data-terminal-clear>Очистить</button><button type="button" data-terminal-restart><svg><use href="#i-refresh"/></svg>Перезапустить</button></div>
       <pre class="terminal-screen" data-terminal-output></pre>
-      <form class="terminal-composer" data-terminal-form><span>›</span><input data-terminal-input autocomplete="off" spellcheck="false" placeholder="输入 PowerShell / Shell 命令…"/><button type="submit"><svg><use href="#i-play"/></svg></button></form>`;
+      <form class="terminal-composer" data-terminal-form><span>›</span><input data-terminal-input autocomplete="off" spellcheck="false" placeholder="Введите команду PowerShell / Shell…"/><button type="submit"><svg><use href="#i-play"/></svg></button></form>`;
     $("[data-terminal-output]", pane).textContent = tab.output || "Grok Build native terminal ready.\n";
     $("[data-terminal-form]", pane).addEventListener("submit", (event) => { event.preventDefault(); submitTerminalCommand(tab.id); });
     const input = $("[data-terminal-input]", pane); let historyIndex = tab.history.length;
@@ -1360,12 +1362,12 @@
     pane ||= [...$$('[data-dock-id]')].find((item) => item.dataset.dockId === tab.id);
     if (!pane || tab.terminalReady) return;
     const status = $("[data-terminal-state]", pane);
-    if (!api) { status.innerHTML = "<i></i>桌面预览"; return; }
-    status.innerHTML = "<i></i>正在启动";
+    if (!api) { status.innerHTML = "<i></i>Предпросмотр интерфейса"; return; }
+    status.innerHTML = "<i></i>Запуск";
     const result = await api.createTerminal(tab.id, tab.cwd || state.cwd);
     if (!result.ok) { status.classList.add("is-error"); status.textContent = result.error; appendTerminalOutput(tab, `${result.error}\n`); return; }
     tab.terminalReady = true; tab.shell = result.shell;
-    status.classList.remove("is-error"); status.innerHTML = `<i></i>${escapeHtml(result.shell)} 在线`;
+    status.classList.remove("is-error"); status.innerHTML = `<i></i>${escapeHtml(result.shell)} подключён`;
     appendTerminalOutput(tab, tab.output ? "" : `${result.shell} · ${result.cwd}\n`);
   }
 
@@ -1398,21 +1400,21 @@
   function initializeBrowserPane(tab, pane) {
     tab.url ||= "about:blank";
     pane.innerHTML = `<form class="browser-bar" data-browser-form>
-      <button type="button" class="icon-button browser-nav browser-nav--back" data-browser-action="back" title="后退"><svg><use href="#i-chevron"/></svg></button>
-      <button type="button" class="icon-button browser-nav" data-browser-action="forward" title="前进"><svg><use href="#i-chevron"/></svg></button>
-      <button type="button" class="icon-button browser-nav" data-browser-action="reload" title="刷新"><svg><use href="#i-refresh"/></svg></button>
-      <input data-browser-url value="${escapeHtml(tab.url === "about:blank" ? "" : tab.url)}" placeholder="输入网址或 localhost 地址" spellcheck="false"/>
-      <button type="submit">前往</button><button type="button" class="icon-button" data-browser-action="external" title="在系统浏览器打开"><svg><use href="#i-external"/></svg></button></form>
-      <div class="browser-status" data-browser-status><i></i><span>输入地址后开始浏览</span></div>
+      <button type="button" class="icon-button browser-nav browser-nav--back" data-browser-action="back" title="Назад"><svg><use href="#i-chevron"/></svg></button>
+      <button type="button" class="icon-button browser-nav" data-browser-action="forward" title="Вперёд"><svg><use href="#i-chevron"/></svg></button>
+      <button type="button" class="icon-button browser-nav" data-browser-action="reload" title="Обновить"><svg><use href="#i-refresh"/></svg></button>
+      <input data-browser-url value="${escapeHtml(tab.url === "about:blank" ? "" : tab.url)}" placeholder="Введите URL или адрес localhost" spellcheck="false"/>
+      <button type="submit">Перейти</button><button type="button" class="icon-button" data-browser-action="external" title="Открыть в системном браузере"><svg><use href="#i-external"/></svg></button></form>
+      <div class="browser-status" data-browser-status><i></i><span>Введите адрес для начала просмотра</span></div>
       <div class="browser-stage"><webview data-browser-view src="${escapeHtml(tab.url)}" partition="persist:grok-browser" webpreferences="contextIsolation=yes,nodeIntegration=no,sandbox=yes"></webview></div>`;
     const view = $("[data-browser-view]", pane); const input = $("[data-browser-url]", pane); const status = $("[data-browser-status]", pane);
     const updateLocation = (url) => { tab.url = url; input.value = url === "about:blank" ? "" : url; saveState(); };
-    view.addEventListener("dom-ready", () => { tab.browserReady = true; status.className = "browser-status is-ready"; status.innerHTML = "<i></i><span>页面已就绪</span>"; });
-    view.addEventListener("did-start-loading", () => { status.className = "browser-status is-loading"; status.innerHTML = "<i></i><span>正在载入…</span>"; });
-    view.addEventListener("did-stop-loading", () => { status.className = "browser-status is-ready"; status.innerHTML = "<i></i><span>载入完成</span>"; try { updateLocation(view.getURL()); } catch {} });
+    view.addEventListener("dom-ready", () => { tab.browserReady = true; status.className = "browser-status is-ready"; status.innerHTML = "<i></i><span>Страница готова</span>"; });
+    view.addEventListener("did-start-loading", () => { status.className = "browser-status is-loading"; status.innerHTML = "<i></i><span>Загрузка…</span>"; });
+    view.addEventListener("did-stop-loading", () => { status.className = "browser-status is-ready"; status.innerHTML = "<i></i><span>Загрузка завершена</span>"; try { updateLocation(view.getURL()); } catch {} });
     view.addEventListener("did-navigate", (event) => updateLocation(event.url));
     view.addEventListener("did-navigate-in-page", (event) => updateLocation(event.url));
-    view.addEventListener("did-fail-load", (event) => { if (event.errorCode === -3) return; status.className = "browser-status is-error"; status.innerHTML = `<i></i><span>${escapeHtml(event.errorDescription || "页面载入失败")}</span>`; });
+    view.addEventListener("did-fail-load", (event) => { if (event.errorCode === -3) return; status.className = "browser-status is-error"; status.innerHTML = `<i></i><span>${escapeHtml(event.errorDescription || "Не удалось загрузить страницу")}</span>`; });
     $("[data-browser-form]", pane).addEventListener("submit", (event) => { event.preventDefault(); navigateBrowser(tab, pane, input.value); });
     $$('[data-browser-action]', pane).forEach((button) => button.addEventListener("click", () => {
       try {
@@ -1463,7 +1465,7 @@
     const view = $("#fileCodeView");
     if (!view) return;
     if (content == null) {
-      view.innerHTML = '<div class="file-code__empty">打开工作区中的文件以查看内容</div>';
+      view.innerHTML = '<div class="file-code__empty">Откройте файл проекта для просмотра содержимого</div>';
       return;
     }
     const lines = String(content).replace(/\r\n/g, "\n").split("\n");
@@ -1474,7 +1476,7 @@
     const crumb = $("#fileBreadcrumb");
     if (!crumb) return;
     if (!filePath) {
-      crumb.innerHTML = "<span>选择右侧文件进行预览</span>";
+      crumb.innerHTML = "<span>Выберите файл справа для просмотра</span>";
       return;
     }
     const parts = filePath.split("/").filter(Boolean);
@@ -1497,7 +1499,7 @@
         ? await api.listWorkspaceDir(state.cwd, dir)
         : { ok: true, entries: [{ name: "README.md", path: "README.md", type: "file", size: 12 }, { name: "desktop", path: "desktop", type: "dir", size: 0 }] };
       if (!result.ok) {
-        target.innerHTML = `<div class="file-tree-empty">${escapeHtml(result.error || "无法读取目录")}</div>`;
+        target.innerHTML = `<div class="file-tree-empty">${escapeHtml(result.error || "Не удалось прочитать папку")}</div>`;
         return;
       }
       entries = result.entries || [];
@@ -1509,7 +1511,7 @@
       : entries;
     target.innerHTML = visible.length
       ? visible.map((entry) => fileTreeItemMarkup(entry, depth)).join("")
-      : '<div class="file-tree-empty">没有匹配的文件</div>';
+      : '<div class="file-tree-empty">Подходящих файлов нет</div>';
     $$("[data-file-path]", target).forEach((button) => {
       const pathValue = button.dataset.filePath;
       const type = button.dataset.fileType;
@@ -1554,10 +1556,10 @@
     const tabName = $("#fileTabName");
     if (tabName) tabName.textContent = basename(file);
     renderFileBreadcrumb(file);
-    renderFileCode("正在读取…");
+    renderFileCode(t("file.reading"));
     $$("[data-file-path]").forEach((button) => button.classList.toggle("is-active", button.dataset.filePath === file));
     if (!api) {
-      renderFileCode(`# ${file}\n\n预览模式示例内容。`);
+      renderFileCode(`# ${file}\n\nПример содержимого в режиме предпросмотра.`);
       return;
     }
     const result = await api.readWorkspaceFile(state.cwd, file);
@@ -1688,7 +1690,7 @@
     $$(".copy-message").forEach((button) => button.addEventListener("click", async () => {
       const id = button.closest(".message").dataset.messageId;
       const message = activeThread()?.messages.find((item) => item.id === id);
-      if (message) { await navigator.clipboard.writeText(message.text); toast("已复制", "回复已复制到剪贴板"); }
+      if (message) { await navigator.clipboard.writeText(message.text); toast(t("toast.copied"), t("toast.copiedReply")); }
     }));
     $$("[data-tool-group-toggle]").forEach((button) => button.addEventListener("click", () => {
       button.closest("[data-tool-group]")?.classList.toggle("is-open");
@@ -1705,12 +1707,12 @@
     const waiting = tools.some((tool) => toolStatus(tool.status, tool.exitCode) === "waiting_permission");
     const live = tools.filter(toolIsLive).length;
     const done = tools.filter((tool) => toolStatus(tool.status, tool.exitCode) === "completed").length;
-    if (waiting) setSessionStateText("权限策略判定");
-    else if (live) setSessionStateText(`执行步骤 ${done}/${tools.length}`);
+    if (waiting) setSessionStateText("Проверка разрешений");
+    else if (live) setSessionStateText(`Выполнение шагов ${done}/${tools.length}`);
   }
 
   function bindMessageBody(body) {
-    $$(".copy-code", body).forEach((button) => button.addEventListener("click", async () => { await navigator.clipboard.writeText(button.closest(".code-block").querySelector("pre").textContent); toast("已复制", "代码块已复制"); }));
+    $$(".copy-code", body).forEach((button) => button.addEventListener("click", async () => { await navigator.clipboard.writeText(button.closest(".code-block").querySelector("pre").textContent); toast(t("toast.copied"), t("toast.copiedCode")); }));
     $$("a", body).forEach((link) => link.addEventListener("click", (event) => { if (api) { event.preventDefault(); api.openExternal(link.href); } }));
   }
 
@@ -1806,7 +1808,7 @@
   }
 
   async function sendPrompt() {
-    if (activeRun) { if (api) await api.cancelPrompt(activeRun); finishRun("已停止"); return; }
+    if (activeRun) { if (api) await api.cancelPrompt(activeRun); finishRun(t("tool.cancelled")); return; }
     const input = $("#promptInput");
     const prompt = input.value.trim();
     if (!prompt) return;
@@ -1819,8 +1821,8 @@
     thread.updatedAt = Date.now();
     input.value = ""; input.style.height = "auto";
     saveState(); renderAll(); scrollToBottom(); setRunning(true);
-    addTimeline("提交任务", prompt.slice(0, 42), "done");
-    addTimeline("Grok 推理", "等待首个响应片段", "active");
+    addTimeline("Отправка задачи", prompt.slice(0, 42), "done");
+    addTimeline("Grok рассуждения", "Ожидание начала ответа", "active");
 
     if (!api) {
       activeRun = `demo-${uid()}`;
@@ -1828,21 +1830,21 @@
       return;
     }
     const result = await api.sendPrompt({ clientId: "main", prompt, cwd: thread.cwd || state.cwd, sessionId: thread.sessionId, model: state.model, effort: state.effort, permissionMode: state.permissionMode, attachments: state.attachments });
-    if (!result.ok) { activeAssistantMessage.text = `启动 Grok 时出现问题：${result.error}`; toast("Runtime 错误", result.error); finishRun("启动失败"); renderMessages(); return; }
-    if (result.compatibility?.compatibilityChecked) { applyModelCompatibility(result.compatibility); toast("模型工具能力已检测", result.compatibility.toolCapabilityDetail || "已更新第三方模型兼容配置"); }
+    if (!result.ok) { activeAssistantMessage.text = `Не удалось запустить Grok: ${result.error}`; toast("Runtime Ошибка", result.error); finishRun("Ошибка запуска"); renderMessages(); return; }
+    if (result.compatibility?.compatibilityChecked) { applyModelCompatibility(result.compatibility); toast("Возможности инструментов модели проверены", result.compatibility.toolCapabilityDetail || "Настройки совместимости сторонней модели обновлены"); }
     activeRun = result.runId;
     state.attachments = [];
     renderAttachments();
   }
 
   function simulatePrompt(prompt) {
-    const response = `我已收到任务：**${prompt}**\n\n桌面预览模式已启用。安装依赖并通过 Electron 启动后，这里会实时呈现 Grok Build 的思考与回答流。\n\n- 会话 ID 自动续接\n- 工作区与附件会传给本地 runtime\n- 支持中止、主题和任务历史`;
+    const response = `Задача получена: **${prompt}**\n\nВключён режим предпросмотра интерфейса. При запуске в Electron здесь появится поток ответов Grok Build.\n\n- Продолжение диалога по ID\n- Передача проекта и вложений локальному Runtime\n- Остановка задач, темы и история` ;
     let index = 0;
     const timer = setInterval(() => {
       if (!activeRun) return clearInterval(timer);
       activeAssistantMessage.text += response.slice(index, index + 5); index += 5;
       scheduleStreamingRender();
-      if (index >= response.length) { clearInterval(timer); finishRun("预览完成"); }
+      if (index >= response.length) { clearInterval(timer); finishRun("Предпросмотр завершён"); }
     }, 35);
   }
 
@@ -1868,23 +1870,23 @@
     } else if (event.type === "diagnostic") {
       activeRunDiagnostics.push(String(event.data || ""));
       activeRunDiagnostics = activeRunDiagnostics.slice(-8);
-      addTimeline("Runtime 活动", String(event.data).slice(0, 55), "done");
+      addTimeline("Runtime активность", String(event.data).slice(0, 55), "done");
     } else if (event.type === "error") {
       ensureActiveAssistant(true);
-      activeAssistantMessage.text += `\n\n**错误：** ${event.message}`;
-      toast("Grok 返回错误", event.message);
+      activeAssistantMessage.text += `\n\n**Ошибка：** ${event.message}`;
+      toast("Grok вернул ошибку", event.message);
       renderMessages();
     } else if (event.type === "end") {
       const thread = activeThread();
       thread.sessionId = event.sessionId || thread.sessionId;
-      finishRun(event.stopReason || "完成");
+      finishRun(event.stopReason || t("settings.done"));
     } else if (event.type === "process_exit" && event.code !== 0) {
       if (activeAssistantMessage || activeThread()) {
         ensureActiveAssistant(true);
         const detail = activeRunDiagnostics.slice(-3).join("\n").trim();
-        activeAssistantMessage.text += `\n\n**Runtime 退出（${event.code ?? event.signal}）**${detail ? `\n\n\`\`\`text\n${detail}\n\`\`\`` : ""}`;
+        activeAssistantMessage.text += `\n\n**Runtime Выход(${event.code ?? event.signal})**${detail ? `\n\n\`\`\`text\n${detail}\n\`\`\`` : ""}`;
       }
-      finishRun(`进程退出 ${event.code ?? event.signal}`);
+      finishRun(`Процесс завершён ${event.code ?? event.signal}`);
     }
   }
 
@@ -1895,23 +1897,23 @@
     }
     if (thread) for (const tool of thread.messages.filter((message) => message.kind === "tool")) {
       if (["pending", "in_progress", "waiting_permission"].includes(toolStatus(tool.status))) {
-        tool.status = /停止|失败|退出|error|cancel/i.test(String(reason)) ? "cancelled" : "completed";
+        tool.status = /останов|ошиб|Выход|останов|ошиб|процесс заверш|error|cancel/i.test(String(reason)) ? "cancelled" : "completed";
       }
     }
     if (thread) thread.updatedAt = Date.now();
     activeRun = null; activeAssistantMessage = null; activeRunDiagnostics = [];
     setRunning(false); saveState(); renderThreads(); renderMessages();
     scheduleWorkspaceInsight();
-    addTimeline("任务结束", reason, "done");
+    addTimeline("Задача завершена", reason, "done");
   }
 
   function scrollToBottom() { requestAnimationFrame(() => { const el = $("#conversation"); el.scrollTop = el.scrollHeight; }); }
   function autoSizeInput() { const el = $("#promptInput"); el.style.height = "auto"; el.style.height = `${Math.min(el.scrollHeight, 180)}px`; }
 
   async function chooseWorkspace() {
-    if (!api) { toast("桌面预览", "Electron 中可选择本地工作区"); return; }
+    if (!api) { toast(t("toast.desktopPreview"), t("toast.desktopPreviewHint")); return; }
     const cwd = await api.pickWorkspace();
-    if (cwd) { state.cwd = cwd; const thread = activeThread(); if (thread && !thread.messages.length) thread.cwd = cwd; saveState(); updateWorkspace(); updateWindowTrail(); await refreshGitInfo(); fileTreeCache.clear(); activeWorkspaceFile = null; refreshActiveDockPane(); toast("已切换工作区", cwd); }
+    if (cwd) { state.cwd = cwd; const thread = activeThread(); if (thread && !thread.messages.length) thread.cwd = cwd; saveState(); updateWorkspace(); updateWindowTrail(); await refreshGitInfo(); fileTreeCache.clear(); activeWorkspaceFile = null; refreshActiveDockPane(); toast(t("toast.workspaceSwitched"), cwd); }
   }
 
   async function chooseFiles() {
@@ -2157,7 +2159,7 @@
     const matches = settingsSearchCatalog()
       .map((entry) => ({ entry, score: scoreSettingsMatch(entry, tokens) }))
       .filter(({ entry }) => matchSettingsTokens(entry.haystack, tokens))
-      .sort((a, b) => b.score - a.score || a.entry.title.localeCompare(b.entry.title, state.locale === "en" ? "en" : "zh"))
+      .sort((a, b) => b.score - a.score || a.entry.title.localeCompare(b.entry.title, state.locale))
       .map(({ entry }) => entry);
 
     const grouped = new Map();
@@ -2366,7 +2368,7 @@
   }
 
   async function refreshAuthInfo() {
-    authState = api ? await api.authInfo() : { signedIn: false, name: "登录 Grok" };
+    authState = api ? await api.authInfo() : { signedIn: false, name: t("account.login") };
     updateAccountUI();
     return authState;
   }
@@ -2398,8 +2400,8 @@
     if (authState.signedIn) {
       stopAuthPolling();
       const result = await api.logout();
-      if (!result.ok) { toast("退出登录失败", result.error); return; }
-      authState = result.info; updateAccountUI(); toast("已退出 Grok", "本地 Runtime 仍可使用第三方模型"); return;
+      if (!result.ok) { toast("Не удалось выйти из аккаунта", result.error); return; }
+      authState = result.info; updateAccountUI(); toast("Вы вышли из Grok", "Локальный Runtime по-прежнему может использовать сторонние модели"); return;
     }
     $("#authProgress").hidden = false; $("#authProgressText").textContent = t("account.connectingAuth");
     const result = await api.login();
@@ -2547,7 +2549,7 @@
     for (const model of local) if (!ids.has(model.id)) { runtimeModels.push(model); ids.add(model.id); }
     if (!runtimeModels.some((item) => item.id === state.model)) {
       state.model = "auto";
-      state.modelLabel = runtimeModels[0]?.label || "自动模型";
+      state.modelLabel = runtimeModels[0]?.label || t("composer.autoModel");
     }
     saveState(); updateWorkspace();
   }
@@ -2817,7 +2819,7 @@
     if (!slashPopover) return;
     const items = slashPopover.querySelector(".slash-popover__items");
     if (!slashMatches.length) {
-      items.innerHTML = '<div class="slash-popover__empty">没有匹配的斜杠命令</div>';
+      items.innerHTML = '<div class="slash-popover__empty">Подходящих команд нет</div>';
       return;
     }
     items.innerHTML = slashMatches.map((command, index) => `
@@ -2851,7 +2853,7 @@
     if (!slashPopover) {
       slashPopover = document.createElement("section");
       slashPopover.className = "slash-popover";
-      slashPopover.innerHTML = `<div class="slash-popover__head">斜杠命令</div><div class="slash-popover__items"></div>`;
+      slashPopover.innerHTML = `<div class="slash-popover__head">Команды через /</div><div class="slash-popover__items"></div>`;
       document.body.appendChild(slashPopover);
     }
     renderSlashMenu();
@@ -2899,7 +2901,7 @@
     const input = $("#promptInput");
     const run = {
       help: () => openPalette(),
-      docs: () => api?.openExternal?.("https://x.ai") || toast("文档", "请查看 Grok Build 使用指南"),
+      docs: () => api?.openExternal?.("https://x.ai") || toast("Документация", "Откройте руководство Grok Build"),
       new: () => createThread(),
       home: () => { state.activeThreadId = null; saveState(); renderAll(); },
       model: () => $("#modelButton").click(),
@@ -2916,20 +2918,20 @@
       "config-agents": () => openSettings("integrations"),
       personas: () => openSettings("integrations"),
       cd: () => chooseWorkspace(),
-      theme: () => { state.theme = resolvedTheme() === "dark" ? "light" : "dark"; saveState(); updateLayout(); toast("主题已切换", resolvedTheme()); },
+      theme: () => { state.theme = resolvedTheme() === "dark" ? "light" : "dark"; saveState(); updateLayout(); toast(t("toast.themeSwitched"), resolvedTheme()); },
       login: () => toggleAuth(),
       logout: () => toggleAuth(),
       quit: () => api?.close?.(),
       exit: () => api?.close?.(),
       copy: async () => {
         const message = [...(activeThread()?.messages || [])].reverse().find((item) => item.role === "assistant" && item.text);
-        if (!message) return toast("没有可复制的回复", "先完成一轮对话");
+        if (!message) return toast("Нет ответа для копирования", "Сначала получите ответ");
         await navigator.clipboard.writeText(message.text);
-        toast("已复制", "最近回复已复制到剪贴板");
+        toast(t("toast.copied"), "Последний ответ скопирован в буфер обмена");
       },
       tasks: () => { state.inspectorOpen = true; openDockType("tasks"); updateLayout(); },
-      context: () => toast("上下文", "桌面端会在运行时自动管理上下文压缩"),
-      compact: () => toast("压缩", "会话压缩由 Runtime 在达到阈值时自动执行"),
+      context: () => toast("Контекст", "Приложение автоматически управляет сжатием контекста"),
+      compact: () => toast("Сжатие", "Runtime автоматически сжимает диалог при достижении порога"),
       resume: () => openPalette(),
       find: () => openPalette(),
       history: () => openPalette()
@@ -2941,7 +2943,7 @@
       return;
     }
     replaceSlashToken(command.label);
-    toast("斜杠命令", `${command.label} 已填入输入框，可继续补充参数后发送`);
+    toast(t("slash.head"), `${command.label} добавлена в поле ввода. Дополните параметры и отправьте`);
   }
 
   function openPicker(anchor, { items, selected, onSelect, align = "left", scrollable = false }) {
@@ -2984,7 +2986,7 @@
 
   function applyRuntimeShell(info) {
     runtimeState = { ...runtimeState, ...info };
-    $("#settingsRuntimePath").textContent = info.binary || "未检测到";
+    $("#settingsRuntimePath").textContent = info.binary || "Не обнаружен";
     $("#settingsRuntimeVersion").textContent = info.version || "—";
     updateAccountUI();
     updateWorkspace();
@@ -2993,7 +2995,7 @@
   function applyRuntimeModels({ models = [], defaultModel = null } = {}) {
     runtimeState = { ...runtimeState, models, defaultModel, modelsReady: true };
     runtimeModels = [
-      { id: "auto", label: defaultModel ? `自动 · ${defaultModel}` : "自动模型" },
+      { id: "auto", label: defaultModel ? `Авто · ${defaultModel}` : t("composer.autoModel") },
       ...models.map((id) => ({ id, label: id }))
     ];
     mergeProviderModels();
@@ -3026,7 +3028,7 @@
 
   async function detectRuntime({ waitForModels = false } = {}) {
     if (!api) {
-      runtimeState = { connected: true, version: "界面预览", binary: null, modelsReady: true };
+      runtimeState = { connected: true, version: "Предпросмотр интерфейса", binary: null, modelsReady: true };
       updateAccountUI();
       return runtimeState;
     }
@@ -3041,10 +3043,10 @@
     const button = $("#refreshRuntime");
     button.disabled = true; button.classList.add("is-refreshing");
     const previousPath = $("#settingsRuntimePath").textContent;
-    $("#settingsRuntimePath").textContent = "正在重新检测 Grok Runtime…";
+    $("#settingsRuntimePath").textContent = "Повторная проверка Grok Runtime…";
     try {
       const info = await detectRuntime({ waitForModels: true });
-      toast(info?.connected ? "Grok Runtime 已连接" : "Runtime 检测完成", info?.version || info?.binary || previousPath || "检测已完成");
+      toast(info?.connected ? "Grok Runtime подключён" : "Проверка Runtime завершена", info?.version || info?.binary || previousPath || "Проверка завершена");
     } finally {
       button.disabled = false; button.classList.remove("is-refreshing");
     }
@@ -3096,7 +3098,7 @@
     $("#themeButton").addEventListener("click", () => { state.theme = resolvedTheme() === "dark" ? "light" : "dark"; saveState(); updateLayout(); });
     $("#themeSelect").addEventListener("change", (event) => { state.theme = event.target.value; saveState(); updateLayout(); });
     $("#localeSelect")?.addEventListener("change", (event) => {
-      state.locale = event.target.value === "en" ? "en" : "zh";
+      state.locale = ["ru", "en"].includes(event.target.value) ? event.target.value : "ru";
       saveState();
       applyLocale();
       toast(t("toast.localeSwitched"), "");
@@ -3186,9 +3188,9 @@
     if (event.type === "error") appendTerminalOutput(tab, `\n${event.message}\n`);
     if (event.type === "exit") {
       tab.terminalReady = false;
-      if (!event.closing) appendTerminalOutput(tab, `\n[终端进程已退出：${event.code ?? event.signal ?? "unknown"}]\n`);
+      if (!event.closing) appendTerminalOutput(tab, `\n[Процесс терминала завершён: ${event.code ?? event.signal ?? "unknown"}]\n`);
       const pane = [...$$('[data-dock-id]')].find((item) => item.dataset.dockId === tab.id);
-      const status = pane && $("[data-terminal-state]", pane); if (status) { status.classList.add("is-error"); status.textContent = "会话已结束"; }
+      const status = pane && $("[data-terminal-state]", pane); if (status) { status.classList.add("is-error"); status.textContent = "Сеанс завершён"; }
     }
   });
   if (api) api.onAuthEvent((event) => {

@@ -1,3 +1,4 @@
+// Modified for the Russian community edition, 2026-10-07.
 const { contextBridge, ipcRenderer, webUtils } = require("electron");
 
 const listeners = new Map();

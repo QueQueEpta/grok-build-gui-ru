@@ -1,45 +1,44 @@
-<!doctype html>
-<html lang="zh-CN" data-theme="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="dark light" />
+<!DOCTYPE html>
+<!-- Modified for the Russian community edition, 2026-10-07. --><html lang="ru" data-theme="dark"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark light">
     <title>Grok Build</title>
-    <link rel="stylesheet" href="tokens.css" />
-    <link rel="stylesheet" href="app.css" />
+    <link rel="stylesheet" href="tokens.css">
+    <link rel="stylesheet" href="app.css">
   </head>
   <body>
     <svg class="svg-sprite" aria-hidden="true">
-      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></symbol>
-      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4 4" /></symbol>
-      <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3.5 7.5h6l2-2h9v13h-17z" /></symbol>
-      <symbol id="i-git" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2" /><circle cx="6" cy="18" r="2" /><circle cx="18" cy="12" r="2" /><path d="M6 8v8M8 7c5 0 3 5 8 5" /></symbol>
-      <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6" /></symbol>
-      <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1" fill="currentColor" stroke="none"/></symbol>
-      <symbol id="i-panel" viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="16" rx="2" /><path d="M9 4v16" /></symbol>
-      <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5" /><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1" /></symbol>
-      <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" /><path d="M19 13.5v-3l-2-.7-.7-1.7.9-1.9-2.1-2.1-1.9.9-1.7-.7-.7-2h-3l-.7 2-1.7.7-1.9-.9-2.1 2.1.9 1.9-.7 1.7-2 .7v3l2 .7.7 1.7-.9 1.9 2.1 2.1 1.9-.9 1.7.7.7 2h3l.7-2 1.7-.7 1.9.9 2.1-2.1-.9-1.9.7-1.7z" /></symbol>
-      <symbol id="i-paperclip" viewBox="0 0 24 24"><path d="m8.5 12.5 6.8-6.8a3 3 0 0 1 4.2 4.2l-8.9 8.9a5 5 0 0 1-7.1-7.1l8.4-8.4" /></symbol>
-      <symbol id="i-send" viewBox="0 0 24 24"><path d="m5 12 14-7-4.5 14-3-5.5zM5 12h6.5" /></symbol>
-      <symbol id="i-stop" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="1.5" fill="currentColor" stroke="none" /></symbol>
-      <symbol id="i-terminal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="m7 9 3 3-3 3M13 15h4" /></symbol>
-      <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4 4 10-10" /></symbol>
-      <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="2" /><path d="M16 8V5H5v11h3" /></symbol>
-      <symbol id="i-x" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" /></symbol>
-      <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="m6 10 6-6 6 6M12 4v16" /></symbol>
-      <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.1 8a7 7 0 0 1 11.9-1l2 5M4 12l2 5a7 7 0 0 0 11.9-1" /></symbol>
-      <symbol id="i-trash" viewBox="0 0 24 24"><path d="M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13M10 10v6M14 10v6" /></symbol>
-      <symbol id="i-review" viewBox="0 0 24 24"><path d="M8 4h8l1 2h3v14H4V6h3z"/><path d="m8 13 2.2 2.2L16 9.5"/></symbol>
-      <symbol id="i-browser" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.4 2.5 3.6 5.5 3.6 9s-1.2 6.5-3.6 9M12 3C9.6 5.5 8.4 8.5 8.4 12s1.2 6.5 3.6 9"/></symbol>
-      <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6zM14 3v5h4"/></symbol>
-      <symbol id="i-tasks" viewBox="0 0 24 24"><path d="m4 6 1.5 1.5L8 5M11 6h9M4 12l1.5 1.5L8 11M11 12h9M4 18l1.5 1.5L8 17M11 18h9"/></symbol>
-      <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 5h5v5M19 5l-8 8"/><path d="M18 13v6H5V6h6"/></symbol>
-      <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"/></symbol>
-      <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></symbol>
-      <symbol id="i-logout" viewBox="0 0 24 24"><path d="M10 5H5v14h5M14 8l4 4-4 4M18 12H9"/></symbol>
-      <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 20 6v5c0 5-3.3 8.3-8 10-4.7-1.7-8-5-8-10V6z"/><path d="m9 12 2 2 4-4"/></symbol>
-      <symbol id="i-memory" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M18 9h4M2 15h4M18 15h4M10 10h4v4h-4z"/></symbol>
-      <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6h7M15 6h5M4 12h3M11 12h9M4 18h10M18 18h2"/><circle cx="13" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="16" cy="18" r="2"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></symbol>
+      <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3.5 7.5h6l2-2h9v13h-17z"></path></symbol>
+      <symbol id="i-git" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2"></circle><circle cx="6" cy="18" r="2"></circle><circle cx="18" cy="12" r="2"></circle><path d="M6 8v8M8 7c5 0 3 5 8 5"></path></symbol>
+      <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"></path></symbol>
+      <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1" fill="currentColor" stroke="none"></circle></symbol>
+      <symbol id="i-panel" viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="16" rx="2"></rect><path d="M9 4v16"></path></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"></circle><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"></path></symbol>
+      <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19 13.5v-3l-2-.7-.7-1.7.9-1.9-2.1-2.1-1.9.9-1.7-.7-.7-2h-3l-.7 2-1.7.7-1.9-.9-2.1 2.1.9 1.9-.7 1.7-2 .7v3l2 .7.7 1.7-.9 1.9 2.1 2.1 1.9-.9 1.7.7.7 2h3l.7-2 1.7-.7 1.9.9 2.1-2.1-.9-1.9.7-1.7z"></path></symbol>
+      <symbol id="i-paperclip" viewBox="0 0 24 24"><path d="m8.5 12.5 6.8-6.8a3 3 0 0 1 4.2 4.2l-8.9 8.9a5 5 0 0 1-7.1-7.1l8.4-8.4"></path></symbol>
+      <symbol id="i-send" viewBox="0 0 24 24"><path d="m5 12 14-7-4.5 14-3-5.5zM5 12h6.5"></path></symbol>
+      <symbol id="i-stop" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="1.5" fill="currentColor" stroke="none"></rect></symbol>
+      <symbol id="i-terminal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="m7 9 3 3-3 3M13 15h4"></path></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4 4 10-10"></path></symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="2"></rect><path d="M16 8V5H5v11h3"></path></symbol>
+      <symbol id="i-x" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"></path></symbol>
+      <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="m6 10 6-6 6 6M12 4v16"></path></symbol>
+      <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"></path><path d="M6.1 8a7 7 0 0 1 11.9-1l2 5M4 12l2 5a7 7 0 0 0 11.9-1"></path></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24"><path d="M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13M10 10v6M14 10v6"></path></symbol>
+      <symbol id="i-review" viewBox="0 0 24 24"><path d="M8 4h8l1 2h3v14H4V6h3z"></path><path d="m8 13 2.2 2.2L16 9.5"></path></symbol>
+      <symbol id="i-browser" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.4 2.5 3.6 5.5 3.6 9s-1.2 6.5-3.6 9M12 3C9.6 5.5 8.4 8.5 8.4 12s1.2 6.5 3.6 9"></path></symbol>
+      <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6zM14 3v5h4"></path></symbol>
+      <symbol id="i-tasks" viewBox="0 0 24 24"><path d="m4 6 1.5 1.5L8 5M11 6h9M4 12l1.5 1.5L8 11M11 12h9M4 18l1.5 1.5L8 17M11 18h9"></path></symbol>
+      <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 5h5v5M19 5l-8 8"></path><path d="M18 13v6H5V6h6"></path></symbol>
+      <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"></path></symbol>
+      <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4.5 21a7.5 7.5 0 0 1 15 0"></path></symbol>
+      <symbol id="i-logout" viewBox="0 0 24 24"><path d="M10 5H5v14h5M14 8l4 4-4 4M18 12H9"></path></symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 20 6v5c0 5-3.3 8.3-8 10-4.7-1.7-8-5-8-10V6z"></path><path d="m9 12 2 2 4-4"></path></symbol>
+      <symbol id="i-memory" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"></rect><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M18 9h4M2 15h4M18 15h4M10 10h4v4h-4z"></path></symbol>
+      <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6h7M15 6h5M4 12h3M11 12h9M4 18h10M18 18h2"></path><circle cx="13" cy="6" r="2"></circle><circle cx="9" cy="12" r="2"></circle><circle cx="16" cy="18" r="2"></circle></symbol>
     </svg>
 
     <div class="app-shell" id="appShell">
@@ -50,112 +49,112 @@
             <span class="brand__word">GROK BUILD</span>
           </button>
         </div>
-        <nav class="titlebar__actions" aria-label="Window controls" data-i18n-aria="titlebar.windowActions">
-          <button class="icon-button title-action" id="themeButton" data-i18n-title="titlebar.theme" title="Toggle theme"><svg><use href="#i-sun"/></svg></button>
-          <button class="icon-button title-action" id="settingsButton" data-i18n-title="titlebar.settings" title="Settings"><svg><use href="#i-settings"/></svg></button>
+        <nav class="titlebar__actions" aria-label="Управление окном" data-i18n-aria="titlebar.windowActions">
+          <button class="icon-button title-action" id="themeButton" data-i18n-title="titlebar.theme" title="Сменить тему"><svg><use href="#i-sun"></use></svg></button>
+          <button class="icon-button title-action" id="settingsButton" data-i18n-title="titlebar.settings" title="Настройки"><svg><use href="#i-settings"></use></svg></button>
           <span class="window-spacer"></span>
-          <button class="window-button" data-window="min" aria-label="Minimize" data-i18n-aria="titlebar.minimize"><span></span></button>
-          <button class="window-button window-button--max" data-window="max" aria-label="Maximize" data-i18n-aria="titlebar.maximize"><span></span></button>
-          <button class="window-button window-button--close" data-window="close" aria-label="Close" data-i18n-aria="titlebar.close"><span></span></button>
+          <button class="window-button" data-window="min" aria-label="Свернуть" data-i18n-aria="titlebar.minimize"><span></span></button>
+          <button class="window-button window-button--max" data-window="max" aria-label="Развернуть" data-i18n-aria="titlebar.maximize"><span></span></button>
+          <button class="window-button window-button--close" data-window="close" aria-label="Закрыть" data-i18n-aria="titlebar.close"><span></span></button>
         </nav>
       </header>
 
       <aside class="sidebar" id="sidebar">
         <div class="sidebar__top">
-          <button class="new-thread-button" id="newThreadButton"><svg><use href="#i-plus"/></svg><span data-i18n="sidebar.newThread">New task</span></button>
-          <button class="icon-button" id="searchButton" data-i18n-title="sidebar.searchThreads" title="Search sessions"><svg><use href="#i-search"/></svg></button>
+          <button class="new-thread-button" id="newThreadButton"><svg><use href="#i-plus"></use></svg><span data-i18n="sidebar.newThread">Новая задача</span></button>
+          <button class="icon-button" id="searchButton" data-i18n-title="sidebar.searchThreads" title="Поиск диалогов"><svg><use href="#i-search"></use></svg></button>
         </div>
 
         <button class="workspace-card" id="workspaceButton">
-          <span class="workspace-card__icon"><svg><use href="#i-folder"/></svg></span>
-          <span class="workspace-card__copy"><b id="workspaceName">选择工作区</b><small id="workspacePath">尚未选择本地目录</small></span>
-          <svg class="workspace-card__chevron"><use href="#i-chevron"/></svg>
+          <span class="workspace-card__icon"><svg><use href="#i-folder"></use></svg></span>
+          <span class="workspace-card__copy"><b id="workspaceName">Выбрать папку проекта</b><small id="workspacePath">Локальная папка не выбрана</small></span>
+          <svg class="workspace-card__chevron"><use href="#i-chevron"></use></svg>
         </button>
 
         <div class="sidebar-section sidebar-section--grow">
-          <div class="section-label"><span data-i18n="sidebar.threads">Tasks</span><button class="text-button" id="clearThreadsButton" data-i18n="sidebar.clearThreads">Tidy up</button></div>
+          <div class="section-label"><span data-i18n="sidebar.threads">Задачи</span><button class="text-button" id="clearThreadsButton" data-i18n="sidebar.clearThreads">Упорядочить</button></div>
           <div class="thread-list" id="threadList"></div>
         </div>
 
         <div class="sidebar__footer">
-          <div class="account-popover" id="accountPopover" hidden>
-            <header><span class="account-avatar account-avatar--large" id="accountPopoverAvatar">G</span><span><b id="accountPopoverName" data-i18n="account.login">Sign in to Grok</b><small id="accountPopoverEmail" data-i18n="account.syncHint">Sync identity with your Grok account</small></span></header>
-            <div class="account-status-row"><span class="status-dot" id="accountRuntimeDot"></span><span><b id="accountRuntimeLabel" data-i18n="account.runtime">Grok Runtime</b><small id="accountVersionLabel" data-i18n="account.detectingVersion">Detecting version…</small></span></div>
+          <div class="account-popover" id="accountPopover" hidden="">
+            <header><span class="account-avatar account-avatar--large" id="accountPopoverAvatar">G</span><span><b id="accountPopoverName" data-i18n="account.login">Войти в Grok</b><small id="accountPopoverEmail" data-i18n="account.syncHint">Синхронизировать аккаунт Grok</small></span></header>
+            <div class="account-status-row"><span class="status-dot" id="accountRuntimeDot"></span><span><b id="accountRuntimeLabel" data-i18n="account.runtime">Движок Grok</b><small id="accountVersionLabel" data-i18n="account.detectingVersion">Определение версии…</small></span></div>
             <nav>
-              <button id="profileMenuButton"><svg><use href="#i-user"/></svg><span data-i18n="account.profile">Profile</span><svg class="menu-chevron"><use href="#i-chevron"/></svg></button>
-              <button id="settingsMenuButton"><svg><use href="#i-settings"/></svg><span data-i18n="account.settings">Settings</span></button>
-              <button id="authMenuButton"><svg><use href="#i-logout"/></svg><span id="authMenuLabel" data-i18n="account.login">Sign in to Grok</span></button>
+              <button id="profileMenuButton"><svg><use href="#i-user"></use></svg><span data-i18n="account.profile">Профиль</span><svg class="menu-chevron"><use href="#i-chevron"></use></svg></button>
+              <button id="settingsMenuButton"><svg><use href="#i-settings"></use></svg><span data-i18n="account.settings">Настройки</span></button>
+              <button id="authMenuButton"><svg><use href="#i-logout"></use></svg><span id="authMenuLabel" data-i18n="account.login">Войти в Grok</span></button>
             </nav>
           </div>
           <button class="usage-card account-card" id="runtimeCard">
             <span class="account-avatar" id="accountAvatar">G<i></i></span>
-            <span><b id="runtimeTitle" data-i18n="account.login">Sign in to Grok</b><small id="runtimeMeta" data-i18n="account.connecting">Connecting to Grok runtime…</small></span>
-            <svg><use href="#i-chevron"/></svg>
+            <span><b id="runtimeTitle" data-i18n="account.login">Войти в Grok</b><small id="runtimeMeta" data-i18n="account.connecting">Подключение к движку Grok…</small></span>
+            <svg><use href="#i-chevron"></use></svg>
           </button>
         </div>
       </aside>
 
       <main class="workspace">
-        <div class="pane-resizer pane-resizer--sidebar" id="sidebarResizer" role="separator" aria-orientation="vertical" aria-label="调整侧栏宽度"></div>
-        <div class="pane-resizer pane-resizer--inspector" id="inspectorResizer" role="separator" aria-orientation="vertical" aria-label="调整工作台宽度"></div>
-        <div class="file-drop-overlay" id="fileDropOverlay" hidden><svg><use href="#i-paperclip"/></svg><b data-i18n="composer.dropFiles">拖放文件以添加到对话</b><small data-i18n="composer.dropFilesHint">松开鼠标后文件会显示在输入框上方</small></div>
+        <div class="pane-resizer pane-resizer--sidebar" id="sidebarResizer" role="separator" aria-orientation="vertical" aria-label="Изменить ширину боковой панели"></div>
+        <div class="pane-resizer pane-resizer--inspector" id="inspectorResizer" role="separator" aria-orientation="vertical" aria-label="Изменить ширину рабочей панели"></div>
+        <div class="file-drop-overlay" id="fileDropOverlay" hidden=""><svg><use href="#i-paperclip"></use></svg><b data-i18n="composer.dropFiles">Перетащите файлы для прикрепления</b><small data-i18n="composer.dropFilesHint">Файлы появятся над полем ввода</small></div>
         <div class="workspace-toolbar">
           <div class="toolbar-group toolbar-group--branch">
-            <button class="icon-button sidebar-toggle" id="sidebarToggle" title="侧栏"><svg><use href="#i-panel"/></svg></button>
-            <button class="branch-pill" id="branchButton" aria-expanded="false" title="查看和切换 Git 分支"><svg><use href="#i-git"/></svg><span id="branchName">检查分支</span><i id="branchDirtyDot"></i><svg class="branch-chevron"><use href="#i-chevron"/></svg></button>
-            <section class="branch-popover" id="branchPopover" hidden>
-              <header><span><small>GIT WORKSPACE</small><b id="branchPopoverTitle">分支</b></span><button class="icon-button" id="branchRefresh" title="刷新"><svg><use href="#i-refresh"/></svg></button></header>
+            <button class="icon-button sidebar-toggle" id="sidebarToggle" title="Боковая панель"><svg><use href="#i-panel"></use></svg></button>
+            <button class="branch-pill" id="branchButton" aria-expanded="false" title="Просмотр и переключение веток Git"><svg><use href="#i-git"></use></svg><span id="branchName">Проверка ветки</span><i id="branchDirtyDot"></i><svg class="branch-chevron"><use href="#i-chevron"></use></svg></button>
+            <section class="branch-popover" id="branchPopover" hidden="">
+              <header><span><small>ПРОЕКТ GIT</small><b id="branchPopoverTitle">Ветки</b></span><button class="icon-button" id="branchRefresh" title="Обновить"><svg><use href="#i-refresh"></use></svg></button></header>
               <div class="branch-summary" id="branchSummary"></div>
-              <label class="branch-search"><svg><use href="#i-search"/></svg><input id="branchSearch" placeholder="搜索本地分支…"/></label>
+              <label class="branch-search"><svg><use href="#i-search"></use></svg><input id="branchSearch" placeholder="Поиск локальных веток…"></label>
               <div class="branch-list" id="branchList"></div>
-              <form class="branch-create" id="branchCreateForm"><input id="branchCreateInput" placeholder="新分支名称" spellcheck="false"/><button class="secondary-button" type="submit"><svg><use href="#i-plus"/></svg>创建</button></form>
+              <form class="branch-create" id="branchCreateForm"><input id="branchCreateInput" placeholder="Название новой ветки" spellcheck="false"><button class="secondary-button" type="submit"><svg><use href="#i-plus"></use></svg>Создать</button></form>
               <footer><span id="branchRootLabel"></span></footer>
             </section>
           </div>
           <div class="toolbar-group toolbar-group--right">
-            <span class="session-state" id="sessionState"><i></i><span id="sessionStateLabel">Ready</span></span>
-            <button class="icon-button" id="inspectorToggle" title="右侧工作台"><svg><use href="#i-panel"/></svg></button>
+            <span class="session-state" id="sessionState"><i></i><span id="sessionStateLabel">Готов</span></span>
+            <button class="icon-button" id="inspectorToggle" title="Правая рабочая панель"><svg><use href="#i-panel"></use></svg></button>
           </div>
         </div>
 
         <section class="conversation" id="conversation" aria-live="polite">
           <div class="conversation__content" id="messages"></div>
-          <button class="scroll-bottom" id="scrollBottom" title="滚动到底部"><svg><use href="#i-arrow-up"/></svg></button>
+          <button class="scroll-bottom" id="scrollBottom" title="Прокрутить вниз"><svg><use href="#i-arrow-up"></use></svg></button>
         </section>
 
         <section class="composer-dock">
           <div class="composer" id="composer">
             <div class="attachment-list" id="attachmentList"></div>
-            <textarea id="promptInput" rows="1" data-i18n-placeholder="composer.placeholder" placeholder="Ask Grok to build, explain, or fix anything…" data-i18n-aria="composer.message" aria-label="Message"></textarea>
+            <textarea id="promptInput" rows="1" data-i18n-placeholder="composer.placeholder" placeholder="Попросите Grok создать, объяснить или исправить…" data-i18n-aria="composer.message" aria-label="Сообщение"></textarea>
             <div class="composer__bottom">
               <div class="composer__tools">
-                <button class="composer-tool" id="attachButton" title="添加文件"><svg><use href="#i-paperclip"/></svg></button>
-                <button class="model-picker" id="modelButton"><span id="modelLabel">自动模型</span><svg><use href="#i-chevron"/></svg></button>
-                <button class="effort-picker" id="effortButton"><span id="effortLabel">高思考</span></button>
+                <button class="composer-tool" id="attachButton" title="Добавить файл"><svg><use href="#i-paperclip"></use></svg></button>
+                <button class="model-picker" id="modelButton"><span id="modelLabel">Автовыбор модели</span><svg><use href="#i-chevron"></use></svg></button>
+                <button class="effort-picker" id="effortButton"><span id="effortLabel">Глубокий анализ</span></button>
               </div>
               <div class="composer__submit">
-                <button type="button" class="agent-mode-picker" id="agentModeButton" title="权限模式" aria-expanded="false">
-                  <span id="agentModeLabel">智能审批</span>
-                  <svg><use href="#i-chevron"/></svg>
+                <button type="button" class="agent-mode-picker" id="agentModeButton" title="Режим разрешений" aria-expanded="false">
+                  <span id="agentModeLabel">Автоматическая проверка</span>
+                  <svg><use href="#i-chevron"></use></svg>
                 </button>
-                <button class="send-button" id="sendButton" aria-label="发送"><svg><use href="#i-send"/></svg></button>
+                <button class="send-button" id="sendButton" aria-label="Отправить"><svg><use href="#i-send"></use></svg></button>
               </div>
             </div>
           </div>
           <div class="dock-meta">
-            <button class="dock-status dock-status--workspace" id="cwdButton" title="切换工作区"><svg><use href="#i-folder"/></svg><span>Grok 工作区</span><b id="cwdLabel">未选择</b><svg class="dock-status__chevron"><use href="#i-chevron"/></svg></button>
-            <span class="dock-status dock-status--local"><i></i><span>本地 Runtime</span><b>已连接</b></span>
+            <button class="dock-status dock-status--workspace" id="cwdButton" title="Сменить папку проекта"><svg><use href="#i-folder"></use></svg><span>Проект Grok</span><b id="cwdLabel">Не выбран</b><svg class="dock-status__chevron"><use href="#i-chevron"></use></svg></button>
+            <span class="dock-status dock-status--local"><i></i><span>Локальный Runtime</span><b>Подключён</b></span>
           </div>
         </section>
       </main>
 
       <aside class="inspector" id="inspector">
         <div class="dock-tabbar">
-          <button class="dock-tab-scroll dock-tab-scroll--prev" id="dockTabPrev" title="向左查看标签页"><svg><use href="#i-chevron"/></svg></button>
+          <button class="dock-tab-scroll dock-tab-scroll--prev" id="dockTabPrev" title="Прокрутить вкладки влево"><svg><use href="#i-chevron"></use></svg></button>
           <div class="dock-tabs" id="dockTabs"></div>
-          <button class="dock-tab-scroll" id="dockTabNext" title="向右查看标签页"><svg><use href="#i-chevron"/></svg></button>
-          <button class="dock-tab-add" id="dockTabAdd" title="打开功能区"><svg><use href="#i-plus"/></svg></button>
-          <button class="icon-button dock-close" id="inspectorClose" title="关闭工作台"><svg><use href="#i-x"/></svg></button>
+          <button class="dock-tab-scroll" id="dockTabNext" title="Прокрутить вкладки вправо"><svg><use href="#i-chevron"></use></svg></button>
+          <button class="dock-tab-add" id="dockTabAdd" title="Добавить рабочую вкладку"><svg><use href="#i-plus"></use></svg></button>
+          <button class="icon-button dock-close" id="inspectorClose" title="Закрыть рабочую панель"><svg><use href="#i-x"></use></svg></button>
         </div>
         <div class="dock-panes">
           <div id="dockDynamicPanes"></div>
@@ -164,127 +163,127 @@
             <div class="file-explorer">
               <div class="file-editor">
                 <div class="file-editor__tabs">
-                  <button type="button" class="file-tab is-active" id="fileTab"><svg><use href="#i-file"/></svg><span id="fileTabName">未选择文件</span></button>
+                  <button type="button" class="file-tab is-active" id="fileTab"><svg><use href="#i-file"></use></svg><span id="fileTabName">Файл не выбран</span></button>
                 </div>
-                <div class="file-editor__crumb" id="fileBreadcrumb"><span>选择左侧文件进行预览</span></div>
+                <div class="file-editor__crumb" id="fileBreadcrumb"><span>Выберите файл слева для просмотра</span></div>
                 <div class="file-editor__body">
                   <div class="file-code" id="fileCodeView">
-                    <div class="file-code__empty">打开工作区中的文件以查看内容</div>
+                    <div class="file-code__empty">Откройте файл проекта для просмотра содержимого</div>
                   </div>
                 </div>
               </div>
               <aside class="file-sidebar">
-                <label class="file-filter"><svg><use href="#i-search"/></svg><input id="fileFilterInput" placeholder="筛选文件…" spellcheck="false"/></label>
+                <label class="file-filter"><svg><use href="#i-search"></use></svg><input id="fileFilterInput" placeholder="Фильтр файлов…" spellcheck="false"></label>
                 <div class="file-tree" id="fileTree"></div>
               </aside>
             </div>
           </section>
         </div>
-        <div class="dock-tab-picker" id="dockTabPicker" hidden></div>
+        <div class="dock-tab-picker" id="dockTabPicker" hidden=""></div>
       </aside>
     </div>
 
-    <div class="palette-backdrop" id="paletteBackdrop" hidden>
-      <section class="palette" role="dialog" aria-modal="true" aria-label="快速操作">
-        <div class="palette__input"><svg><use href="#i-search"/></svg><input id="paletteInput" placeholder="搜索任务或输入命令…" /><kbd>ESC</kbd></div>
+    <div class="palette-backdrop" id="paletteBackdrop" hidden="">
+      <section class="palette" role="dialog" aria-modal="true" aria-label="Быстрые действия">
+        <div class="palette__input"><svg><use href="#i-search"></use></svg><input id="paletteInput" placeholder="Поиск задач или ввод команды…"><kbd>ESC</kbd></div>
         <div class="palette__results" id="paletteResults"></div>
       </section>
     </div>
 
-    <div class="modal-backdrop settings-backdrop" id="settingsBackdrop" hidden>
+    <div class="modal-backdrop settings-backdrop" id="settingsBackdrop" hidden="">
       <section class="settings-window" id="settingsWindow" role="dialog" aria-modal="true" data-i18n-aria="settings.title">
         <header class="settings-window__header">
-          <div><small>GROK BUILD</small><h2 data-i18n="settings.title">Settings</h2></div>
-          <label class="settings-search"><svg><use href="#i-search"/></svg><input id="settingsSearch" data-i18n-placeholder="settings.search" placeholder="Search settings…"/></label>
-          <button class="icon-button" data-close-modal><svg><use href="#i-x"/></svg></button>
+          <div><small>GROK BUILD</small><h2 data-i18n="settings.title">Настройки</h2></div>
+          <label class="settings-search"><svg><use href="#i-search"></use></svg><input id="settingsSearch" data-i18n-placeholder="settings.search" placeholder="Поиск настроек…"></label>
+          <button class="icon-button" data-close-modal=""><svg><use href="#i-x"></use></svg></button>
         </header>
         <div class="settings-layout">
           <aside class="settings-nav" id="settingsNav">
-            <div class="settings-nav__group" data-i18n="settings.group.personal">Personal</div>
-            <button data-settings-page="account"><svg><use href="#i-user"/></svg><span data-i18n="settings.nav.account">Account</span></button>
-            <button class="is-active" data-settings-page="general"><svg><use href="#i-sliders"/></svg><span data-i18n="settings.nav.general">General</span></button>
-            <button data-settings-page="models"><svg><use href="#i-sliders"/></svg><span data-i18n="settings.nav.models">Models</span></button>
-            <button data-settings-page="appearance"><svg><use href="#i-sun"/></svg><span data-i18n="settings.nav.appearance">Appearance</span></button>
-            <button data-settings-page="input"><svg><use href="#i-terminal"/></svg><span data-i18n="settings.nav.input">Input & interaction</span></button>
-            <div class="settings-nav__group" data-i18n="settings.group.runtime">Grok Runtime</div>
-            <button data-settings-page="agent"><svg><use href="#i-shield"/></svg><span data-i18n="settings.nav.agent">Agent & permissions</span></button>
-            <button data-settings-page="tools"><svg><use href="#i-terminal"/></svg><span data-i18n="settings.nav.tools">Tools</span></button>
-            <button data-settings-page="memory"><svg><use href="#i-memory"/></svg><span data-i18n="settings.nav.memory">Memory</span></button>
-            <button data-settings-page="git"><svg><use href="#i-git"/></svg><span data-i18n="settings.nav.git">Git & Worktree</span></button>
-            <button data-settings-page="integrations"><svg><use href="#i-tasks"/></svg><span data-i18n="settings.nav.integrations">Integrations</span></button>
-            <div class="settings-nav__group" data-i18n="settings.group.system">System</div>
-            <button data-settings-page="privacy"><svg><use href="#i-shield"/></svg><span data-i18n="settings.nav.privacy">Privacy</span></button>
-            <button data-settings-page="advanced"><svg><use href="#i-file"/></svg><span data-i18n="settings.nav.advanced">Config file</span></button>
+            <div class="settings-nav__group" data-i18n="settings.group.personal">Личные</div>
+            <button data-settings-page="account"><svg><use href="#i-user"></use></svg><span data-i18n="settings.nav.account">Аккаунт</span></button>
+            <button class="is-active" data-settings-page="general"><svg><use href="#i-sliders"></use></svg><span data-i18n="settings.nav.general">Общие</span></button>
+            <button data-settings-page="models"><svg><use href="#i-sliders"></use></svg><span data-i18n="settings.nav.models">Модели</span></button>
+            <button data-settings-page="appearance"><svg><use href="#i-sun"></use></svg><span data-i18n="settings.nav.appearance">Внешний вид</span></button>
+            <button data-settings-page="input"><svg><use href="#i-terminal"></use></svg><span data-i18n="settings.nav.input">Ввод и взаимодействие</span></button>
+            <div class="settings-nav__group" data-i18n="settings.group.runtime">Движок Grok</div>
+            <button data-settings-page="agent"><svg><use href="#i-shield"></use></svg><span data-i18n="settings.nav.agent">Агент и разрешения</span></button>
+            <button data-settings-page="tools"><svg><use href="#i-terminal"></use></svg><span data-i18n="settings.nav.tools">Инструменты</span></button>
+            <button data-settings-page="memory"><svg><use href="#i-memory"></use></svg><span data-i18n="settings.nav.memory">Память</span></button>
+            <button data-settings-page="git"><svg><use href="#i-git"></use></svg><span data-i18n="settings.nav.git">Git и рабочие деревья</span></button>
+            <button data-settings-page="integrations"><svg><use href="#i-tasks"></use></svg><span data-i18n="settings.nav.integrations">Интеграции</span></button>
+            <div class="settings-nav__group" data-i18n="settings.group.system">Системный</div>
+            <button data-settings-page="privacy"><svg><use href="#i-shield"></use></svg><span data-i18n="settings.nav.privacy">Приватность</span></button>
+            <button data-settings-page="advanced"><svg><use href="#i-file"></use></svg><span data-i18n="settings.nav.advanced">Файл конфигурации</span></button>
           </aside>
 
           <main class="settings-content" id="settingsContent">
-            <section class="settings-panel" data-settings-panel="search" id="settingsSearchResults" hidden></section>
+            <section class="settings-panel" data-settings-panel="search" id="settingsSearchResults" hidden=""></section>
 
-            <section class="settings-panel" data-settings-panel="account" hidden>
-              <div class="settings-panel__heading"><h3 data-i18n="settings.nav.account">Account</h3><p data-i18n="settings.account.desc">Manage Grok sign-in, team info, and runtime connection.</p></div>
-              <div class="profile-hero"><span class="account-avatar account-avatar--hero" id="settingsAccountAvatar">G</span><span><h4 id="settingsAccountName">Sign in to Grok</h4><p id="settingsAccountEmail" data-i18n="settings.account.loginAfter">Sign in to use your Grok account in the desktop app</p><small id="settingsAccountTeam"></small></span><button class="primary-button" id="settingsAuthButton">Sign in to Grok</button></div>
-              <div class="settings-card"><div class="settings-row"><span><b data-i18n="account.runtime">Grok Runtime</b><small id="settingsRuntimePath" data-i18n="settings.account.autoDetect">Auto-detect</small></span><button class="secondary-button" id="refreshRuntime"><svg><use href="#i-refresh"/></svg><span data-i18n="settings.account.redetect">Re-detect</span></button></div><div class="settings-row"><span><b data-i18n="settings.account.version">Version</b><small data-i18n="settings.account.versionDesc">Native TUI runtime connected to the desktop app</small></span><code id="settingsRuntimeVersion">—</code></div></div>
-              <div class="auth-progress" id="authProgress" hidden><span class="status-dot is-busy"></span><pre id="authProgressText" data-i18n="account.startingLogin">Starting sign-in…</pre></div>
+            <section class="settings-panel" data-settings-panel="account" hidden="">
+              <div class="settings-panel__heading"><h3 data-i18n="settings.nav.account">Аккаунт</h3><p data-i18n="settings.account.desc">Вход в Grok, сведения о команде и подключение движка.</p></div>
+              <div class="profile-hero"><span class="account-avatar account-avatar--hero" id="settingsAccountAvatar">G</span><span><h4 id="settingsAccountName">Войти в Grok</h4><p id="settingsAccountEmail" data-i18n="settings.account.loginAfter">Войдите в Grok для работы в приложении</p><small id="settingsAccountTeam"></small></span><button class="primary-button" id="settingsAuthButton">Войти в Grok</button></div>
+              <div class="settings-card"><div class="settings-row"><span><b data-i18n="account.runtime">Движок Grok</b><small id="settingsRuntimePath" data-i18n="settings.account.autoDetect">Автоопределение</small></span><button class="secondary-button" id="refreshRuntime"><svg><use href="#i-refresh"></use></svg><span data-i18n="settings.account.redetect">Найти заново</span></button></div><div class="settings-row"><span><b data-i18n="settings.account.version">Версия</b><small data-i18n="settings.account.versionDesc">Native TUI runtime connected to the desktop app</small></span><code id="settingsRuntimeVersion">—</code></div></div>
+              <div class="auth-progress" id="authProgress" hidden=""><span class="status-dot is-busy"></span><pre id="authProgressText" data-i18n="account.startingLogin">Начинаем вход…</pre></div>
             </section>
 
             <section class="settings-panel is-active" data-settings-panel="general">
-              <div class="settings-panel__heading"><h3 data-i18n="settings.general.title">General</h3><p data-i18n="settings.general.desc">Desktop behavior and native Grok session defaults.</p></div>
+              <div class="settings-panel__heading"><h3 data-i18n="settings.general.title">Общие</h3><p data-i18n="settings.general.desc">Поведение приложения и параметры новых сеансов Grok.</p></div>
               <div class="settings-card">
-                <div class="settings-row"><span><b data-i18n="settings.general.theme">Desktop theme</b><small data-i18n="settings.general.themeDesc">Controls Grok Build desktop appearance only</small></span><select id="themeSelect"><option value="system" data-i18n-option="settings.theme.system">System</option><option value="dark" data-i18n-option="settings.theme.dark">Dark</option><option value="light" data-i18n-option="settings.theme.light">Light</option></select></div>
-                <div class="settings-row"><span><b data-i18n="settings.general.locale">Interface language</b><small data-i18n="settings.general.localeDesc">Switch desktop UI language</small></span><select id="localeSelect"><option value="zh" data-i18n-option="lang.zh">中文</option><option value="en" data-i18n-option="lang.en">English</option></select></div>
+                <div class="settings-row"><span><b data-i18n="settings.general.theme">Тема приложения</b><small data-i18n="settings.general.themeDesc">Внешний вид графического интерфейса Grok Build</small></span><select id="themeSelect"><option value="system" data-i18n-option="settings.theme.system">Системный</option><option value="dark" data-i18n-option="settings.theme.dark">Тёмная</option><option value="light" data-i18n-option="settings.theme.light">Светлая</option></select></div>
+                <div class="settings-row"><span><b data-i18n="settings.general.locale">Язык интерфейса</b><small data-i18n="settings.general.localeDesc">Выберите язык приложения</small></span><select id="localeSelect"><option value="ru" data-i18n-option="lang.ru">Русский</option><option value="en" data-i18n-option="lang.en">English</option></select></div>
               </div>
               <div id="nativeGeneralSettings"></div>
             </section>
 
-            <section class="settings-panel" data-settings-panel="models" hidden>
-              <div class="settings-panel__heading"><h3 data-i18n="settings.models.title">Models</h3><p data-i18n="settings.models.desc">Set native defaults and discover OpenAI or Anthropic-compatible providers.</p></div>
+            <section class="settings-panel" data-settings-panel="models" hidden="">
+              <div class="settings-panel__heading"><h3 data-i18n="settings.models.title">Модели</h3><p data-i18n="settings.models.desc">Модели по умолчанию и подключение совместимых сервисов OpenAI или Anthropic.</p></div>
               <div id="nativeModelSettings"></div>
-              <div class="settings-section-label"><span data-i18n="settings.models.thirdParty">Third-party models</span><small data-i18n="settings.models.thirdPartyDesc">Auto-detect protocol and Grok CLI tool compatibility</small></div>
-              <div class="provider-form"><label><span>API URL</span><input id="providerUrl" type="url" placeholder="https://api.example.com/v1" spellcheck="false"/></label><label><span data-i18n="settings.models.apiKey">API key</span><input id="providerKey" type="password" data-i18n-placeholder="settings.models.apiKeyPlaceholder" placeholder="Stored locally on this machine" autocomplete="new-password"/></label><div class="provider-form__actions"><span class="provider-detect-status" id="providerDetectStatus" data-i18n="settings.models.detectHint">Fill in connection details to discover models</span><button class="secondary-button" id="discoverModelsButton"><svg><use href="#i-search"/></svg><span data-i18n="settings.models.discover">Discover models</span></button></div></div>
-              <div class="discovered-models" id="discoveredModels" hidden></div><div class="provider-save-row" id="providerSaveRow" hidden><span id="providerSelectionCount">0 models selected</span><button class="primary-button" id="saveProviderButton" data-i18n="settings.models.saveSelected">Save selected models</button></div><div class="saved-providers" id="savedProviders"></div>
+              <div class="settings-section-label"><span data-i18n="settings.models.thirdParty">Сторонние модели</span><small data-i18n="settings.models.thirdPartyDesc">Определение протокола и совместимости инструментов Grok CLI</small></div>
+              <div class="provider-form"><label><span>Адрес API</span><input id="providerUrl" type="url" placeholder="https://api.example.com/v1" spellcheck="false"></label><label><span data-i18n="settings.models.apiKey">Ключ API</span><input id="providerKey" type="password" data-i18n-placeholder="settings.models.apiKeyPlaceholder" placeholder="Хранится локально на этом компьютере" autocomplete="new-password"></label><div class="provider-form__actions"><span class="provider-detect-status" id="providerDetectStatus" data-i18n="settings.models.detectHint">Введите параметры подключения для поиска моделей</span><button class="secondary-button" id="discoverModelsButton"><svg><use href="#i-search"></use></svg><span data-i18n="settings.models.discover">Найти модели</span></button></div></div>
+              <div class="discovered-models" id="discoveredModels" hidden=""></div><div class="provider-save-row" id="providerSaveRow" hidden=""><span id="providerSelectionCount">0 models selected</span><button class="primary-button" id="saveProviderButton" data-i18n="settings.models.saveSelected">Сохранить выбранные модели</button></div><div class="saved-providers" id="savedProviders"></div>
             </section>
 
-            <section class="settings-panel" data-settings-panel="appearance" hidden><div class="settings-panel__heading"><h3 data-i18n="settings.appearance.title">Appearance</h3><p data-i18n="settings.appearance.desc">Native TUI theme, thinking blocks, tool grouping, and density.</p></div><div id="nativeAppearanceSettings"></div></section>
-            <section class="settings-panel" data-settings-panel="input" hidden><div class="settings-panel__heading"><h3 data-i18n="settings.input.title">Input & interaction</h3><p data-i18n="settings.input.desc">Editing mode, voice input, scrolling, and text selection.</p></div><div id="nativeInputSettings"></div></section>
-            <section class="settings-panel" data-settings-panel="agent" hidden><div class="settings-panel__heading"><h3 data-i18n="settings.agent.title">Agent & permissions</h3><p data-i18n="settings.agent.desc">Approval policy, sub-agents, question wait, and compaction.</p></div><div id="nativeAgentSettings"></div></section>
-            <section class="settings-panel" data-settings-panel="tools" hidden><div class="settings-panel__heading"><h3 data-i18n="settings.tools.title">Tools</h3><p data-i18n="settings.tools.desc">Shell, gitignore, LSP, and code index settings.</p></div><div id="nativeToolSettings"></div></section>
-            <section class="settings-panel" data-settings-panel="memory" hidden><div class="settings-panel__heading"><h3 data-i18n="settings.memory.title">Memory</h3><p data-i18n="settings.memory.desc">Cross-session memory, autosave, watch, and retrieval thresholds.</p></div><div id="nativeMemorySettings"></div></section>
-            <section class="settings-panel" data-settings-panel="git" hidden><div class="settings-panel__heading"><h3 data-i18n="settings.git.title">Git & Worktree</h3><p data-i18n="settings.git.desc">New session, fork session, and change-tracking policies.</p></div><div id="nativeGitSettings"></div></section>
+            <section class="settings-panel" data-settings-panel="appearance" hidden=""><div class="settings-panel__heading"><h3 data-i18n="settings.appearance.title">Внешний вид</h3><p data-i18n="settings.appearance.desc">Тема терминала, блоки размышлений, группировка инструментов и плотность интерфейса.</p></div><div id="nativeAppearanceSettings"></div></section>
+            <section class="settings-panel" data-settings-panel="input" hidden=""><div class="settings-panel__heading"><h3 data-i18n="settings.input.title">Ввод и взаимодействие</h3><p data-i18n="settings.input.desc">Режим редактирования, голосовой ввод, прокрутка и выделение текста.</p></div><div id="nativeInputSettings"></div></section>
+            <section class="settings-panel" data-settings-panel="agent" hidden=""><div class="settings-panel__heading"><h3 data-i18n="settings.agent.title">Агент и разрешения</h3><p data-i18n="settings.agent.desc">Подтверждение действий, субагенты, ожидание ответов и сжатие контекста.</p></div><div id="nativeAgentSettings"></div></section>
+            <section class="settings-panel" data-settings-panel="tools" hidden=""><div class="settings-panel__heading"><h3 data-i18n="settings.tools.title">Инструменты</h3><p data-i18n="settings.tools.desc">Настройки командной оболочки, gitignore, LSP и индекса кода.</p></div><div id="nativeToolSettings"></div></section>
+            <section class="settings-panel" data-settings-panel="memory" hidden=""><div class="settings-panel__heading"><h3 data-i18n="settings.memory.title">Память</h3><p data-i18n="settings.memory.desc">Память между сеансами, автосохранение, отслеживание и пороги поиска.</p></div><div id="nativeMemorySettings"></div></section>
+            <section class="settings-panel" data-settings-panel="git" hidden=""><div class="settings-panel__heading"><h3 data-i18n="settings.git.title">Git и рабочие деревья</h3><p data-i18n="settings.git.desc">Настройки новых сеансов, ответвлений диалогов и отслеживания изменений.</p></div><div id="nativeGitSettings"></div></section>
 
-            <section class="settings-panel" data-settings-panel="integrations" hidden>
-              <div class="settings-panel__heading"><h3 data-i18n="settings.integrations.title">Integrations</h3><p data-i18n="settings.integrations.desc">Native TUI loads extensions from global and project `.grok` directories.</p></div>
+            <section class="settings-panel" data-settings-panel="integrations" hidden="">
+              <div class="settings-panel__heading"><h3 data-i18n="settings.integrations.title">Интеграции</h3><p data-i18n="settings.integrations.desc">Движок загружает расширения из глобальной папки и папки проекта `.grok`.</p></div>
               <div class="integration-grid" id="integrationGrid"></div>
-              <div class="settings-card"><div class="settings-row"><span><b data-i18n="settings.integrations.manage">Manage integrations</b><small data-i18n="settings.integrations.manageDesc">MCP, plugins, and extra directories live in native config.toml</small></span><button class="secondary-button" id="integrationOpenConfig"><svg><use href="#i-external"/></svg><span data-i18n="settings.integrations.openConfig">Open config</span></button></div></div>
+              <div class="settings-card"><div class="settings-row"><span><b data-i18n="settings.integrations.manage">Управление интеграциями</b><small data-i18n="settings.integrations.manageDesc">MCP, плагины и дополнительные папки задаются в config.toml</small></span><button class="secondary-button" id="integrationOpenConfig"><svg><use href="#i-external"></use></svg><span data-i18n="settings.integrations.openConfig">Открыть конфигурацию</span></button></div></div>
             </section>
 
-            <section class="settings-panel" data-settings-panel="privacy" hidden><div class="settings-panel__heading"><h3 data-i18n="settings.privacy.title">Privacy</h3><p data-i18n="settings.privacy.desc">Anonymous telemetry, feedback, and local data behavior.</p></div><div id="nativePrivacySettings"></div></section>
-            <section class="settings-panel" data-settings-panel="advanced" hidden>
-              <div class="settings-panel__heading"><h3 data-i18n="settings.advanced.title">Native config file</h3><p data-i18n="settings.advanced.desc">Edits here apply to the native TUI ~/.grok/config.toml.</p></div>
-              <div class="raw-config-toolbar"><code id="nativeConfigPath">~/.grok/config.toml</code><span></span><button class="secondary-button" id="reloadRawConfig"><svg><use href="#i-refresh"/></svg><span data-i18n="settings.advanced.reload">Reload</span></button><button class="secondary-button" id="revealRawConfig"><svg><use href="#i-folder"/></svg><span data-i18n="settings.advanced.reveal">Reveal file</span></button></div>
-              <textarea class="raw-config-editor" id="rawConfigEditor" spellcheck="false" data-i18n-aria="settings.advanced.rawLabel" aria-label="Raw config.toml"></textarea>
-              <div class="raw-config-save"><small data-i18n="settings.advanced.backupHint">A config.toml.desktop-backup copy is created before saving</small><button class="primary-button" id="saveRawConfig" data-i18n="settings.advanced.save">Save config</button></div>
+            <section class="settings-panel" data-settings-panel="privacy" hidden=""><div class="settings-panel__heading"><h3 data-i18n="settings.privacy.title">Приватность</h3><p data-i18n="settings.privacy.desc">Анонимная телеметрия, обратная связь и локальные данные.</p></div><div id="nativePrivacySettings"></div></section>
+            <section class="settings-panel" data-settings-panel="advanced" hidden="">
+              <div class="settings-panel__heading"><h3 data-i18n="settings.advanced.title">Файл конфигурации движка</h3><p data-i18n="settings.advanced.desc">Edits here apply to the native TUI ~/.grok/config.toml.</p></div>
+              <div class="raw-config-toolbar"><code id="nativeConfigPath">~/.grok/config.toml</code><span></span><button class="secondary-button" id="reloadRawConfig"><svg><use href="#i-refresh"></use></svg><span data-i18n="settings.advanced.reload">Перезагрузить</span></button><button class="secondary-button" id="revealRawConfig"><svg><use href="#i-folder"></use></svg><span data-i18n="settings.advanced.reveal">Показать файл</span></button></div>
+              <textarea class="raw-config-editor" id="rawConfigEditor" spellcheck="false" data-i18n-aria="settings.advanced.rawLabel" aria-label="Содержимое config.toml"></textarea>
+              <div class="raw-config-save"><small data-i18n="settings.advanced.backupHint">Перед сохранением создаётся копия config.toml.desktop-backup</small><button class="primary-button" id="saveRawConfig" data-i18n="settings.advanced.save">Сохранить конфигурацию</button></div>
             </section>
           </main>
         </div>
-        <footer class="settings-window__footer"><span id="settingsPendingStatus"></span><button class="primary-button" id="settingsDoneButton" data-i18n="settings.done">Done</button></footer>
+        <footer class="settings-window__footer"><span id="settingsPendingStatus"></span><button class="primary-button" id="settingsDoneButton" data-i18n="settings.done">Готово</button></footer>
       </section>
     </div>
 
-    <div class="modal-backdrop integration-detail-backdrop" id="integrationDetailBackdrop" hidden>
+    <div class="modal-backdrop integration-detail-backdrop" id="integrationDetailBackdrop" hidden="">
       <section class="integration-detail-modal" role="dialog" aria-modal="true" aria-labelledby="integrationDetailTitle">
         <header>
           <div>
-            <small id="integrationDetailSource">INTEGRATION</small>
-            <h2 id="integrationDetailTitle" data-i18n="integration.detailTitle">Integration details</h2>
+            <small id="integrationDetailSource">ИНТЕГРАЦИЯ</small>
+            <h2 id="integrationDetailTitle" data-i18n="integration.detailTitle">Сведения об интеграции</h2>
           </div>
-          <button class="icon-button" id="integrationDetailClose" data-i18n-aria="integration.close" aria-label="Close"><svg><use href="#i-x"/></svg></button>
+          <button class="icon-button" id="integrationDetailClose" data-i18n-aria="integration.close" aria-label="Закрыть"><svg><use href="#i-x"></use></svg></button>
         </header>
         <div class="integration-detail-list" id="integrationDetailList"></div>
         <footer>
           <code id="integrationDetailPath"></code>
           <div class="integration-detail-actions">
-            <button class="secondary-button" id="integrationDetailReveal"><svg><use href="#i-folder"/></svg><span data-i18n="integration.reveal">Reveal location</span></button>
-            <button class="primary-button" id="integrationDetailOpen" data-i18n="integration.openConfig">Open config</button>
+            <button class="secondary-button" id="integrationDetailReveal"><svg><use href="#i-folder"></use></svg><span data-i18n="integration.reveal">Показать расположение</span></button>
+            <button class="primary-button" id="integrationDetailOpen" data-i18n="integration.openConfig">Открыть конфигурацию</button>
           </div>
         </footer>
       </section>
@@ -293,6 +292,8 @@
     <div class="toast-stack" id="toastStack"></div>
     <script src="i18n.js"></script>
     <script src="locales-native.js"></script>
+    <script src="locales-ru.js"></script>
     <script src="app.js"></script>
-  </body>
-</html>
+
+
+</body></html>
